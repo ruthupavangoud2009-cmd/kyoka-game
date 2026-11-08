@@ -72,3 +72,4 @@ Output: `Builds/Android/KYOKA.apk`
 .\Development\InstallAndroid.ps1 -ConfirmInstall
 ```
 4. The script detects your phone, checks ARM64 architecture, installs `KYOKA.apk`, and launches the game directly!
+

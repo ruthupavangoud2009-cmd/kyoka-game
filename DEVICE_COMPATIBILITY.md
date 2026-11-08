@@ -37,3 +37,4 @@ Hardware specifications, performance presets, rendering tiering, and compatibili
 2. **Object Pooling**: Projectiles, slash effects, and damage indicators utilize pooled game objects rather than constant runtime Instantiate/Destroy allocations.
 3. **Occlusion Culling & Streaming**: The 6 major regions are spatially segregated (`regionRoots` dictionaries) so that only the active region consumes draw calls and physics cycles.
 4. **Physics Optimization**: Fixed timestep set to 0.02s (50Hz), with ground vehicle rigidbodies configured with rotational constraints to eliminate unnecessary physics recalculations.
+

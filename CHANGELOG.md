@@ -63,3 +63,4 @@ All notable changes across development phases are documented in this file.
 - Fixed critical syntax error in `KyokaPlayerBootstrap.cs` (literal `\n` characters in using directives).
 - Fixed camera audio listener duplication: ensured exactly one active `AudioListener` is retained at runtime.
 - Updated `Packages/manifest.json` with pinned versions for Universal Render Pipeline, Input System, Netcode for GameObjects, and Transport.
+

@@ -80,3 +80,4 @@ if ($process.ExitCode -eq 0 -and (Test-Path $exePath)) {
     }
     exit 1
 }
+

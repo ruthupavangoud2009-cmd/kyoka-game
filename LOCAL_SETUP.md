@@ -38,3 +38,4 @@ KYOKA includes a built-in direct TCP socket networking provider in `KyokaNetwork
 3. Call `KyokaNetworkManager.Instance.ConnectLanClient("192.168.1.105", 7777);`.
 4. Client handshakes with Host. Remote player avatar appears in the world.
 5. Transforms, health changes, and combat actions replicate across both screens.
+

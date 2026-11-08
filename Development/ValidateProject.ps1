@@ -153,3 +153,4 @@ if ($failCount -eq 0) {
     Write-Host "Please resolve the failures reported above.`n" -ForegroundColor Red
     exit 1
 }
+

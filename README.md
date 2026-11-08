@@ -99,3 +99,4 @@ Also accessible inside Unity Editor from the top menu:
 - `KYOKA > Build > Android APK (KYOKA.apk)`
 - `KYOKA > Build > Validate Project`
 - `KYOKA > Build > Open Build Folder`
+

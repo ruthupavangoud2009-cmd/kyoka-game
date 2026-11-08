@@ -12,6 +12,7 @@ using Kyoka.Economy;
 using Kyoka.Survival;
 using Kyoka.Social;
 using Kyoka.Backend;
+using Kyoka.Audio;
 
 namespace Kyoka.Core
 {
@@ -57,10 +58,14 @@ namespace Kyoka.Core
             EnsureComponent<KyokaNetworkManager>("NetworkManager");
             EnsureComponent<KyokaBackendClient>("BackendClient");
 
+            // Audio & Ambience
+            EnsureComponent<KyokaAudioManager>("AudioManager");
+
             // UI & Presentation
             EnsureComponent<KyokaUIManager>("UIManager");
             EnsureComponent<KyokaTouchControls>("TouchControls");
             EnsureComponent<KyokaHUD>("KYOKA_HUD");
+            EnsureComponent<KyokaTrafficSystem>("TrafficSystem");
         }
 
         private T EnsureComponent<T>(string goName) where T : Component

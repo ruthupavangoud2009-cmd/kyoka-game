@@ -42,3 +42,4 @@ Or for development builds with profiling:
    - Mouse cursor locks to center for look control.
    - Press **Escape** anytime to unlock the cursor and access the pause menu.
    - Press **Save** to verify that JSON save data is written to `%USERPROFILE%\AppData\LocalLow\KYOKA Studios\KYOKA\kyoka_save.json`.
+

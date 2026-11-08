@@ -38,3 +38,4 @@ namespace Kyoka.Combat
         public Color weaponThemeColor = Color.cyan;
     }
 }
+

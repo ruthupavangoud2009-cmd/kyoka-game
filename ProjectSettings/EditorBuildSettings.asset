@@ -7,4 +7,25 @@ EditorBuildSettings:
   m_Scenes:
   - m_Path: Assets/KYOKA/Scenes/KYOKA_Bootstrap.unity
     m_Enabled: 1
-    m_Guid: 00000000000000000000000000000000
+    m_Guid: 00000000000000000000000000000001
+  - m_Path: Assets/KYOKA/Scenes/KYOKA_MainMenu.unity
+    m_Enabled: 1
+    m_Guid: 00000000000000000000000000000002
+  - m_Path: Assets/KYOKA/Scenes/KYOKA_City.unity
+    m_Enabled: 1
+    m_Guid: 00000000000000000000000000000003
+  - m_Path: Assets/KYOKA/Scenes/KYOKA_Wildlands.unity
+    m_Enabled: 1
+    m_Guid: 00000000000000000000000000000004
+  - m_Path: Assets/KYOKA/Scenes/KYOKA_OceanRealm.unity
+    m_Enabled: 1
+    m_Guid: 00000000000000000000000000000005
+  - m_Path: Assets/KYOKA/Scenes/KYOKA_AnimeRealm.unity
+    m_Enabled: 1
+    m_Guid: 00000000000000000000000000000006
+  - m_Path: Assets/KYOKA/Scenes/KYOKA_BattleIslands.unity
+    m_Enabled: 1
+    m_Guid: 00000000000000000000000000000007
+  - m_Path: Assets/KYOKA/Scenes/KYOKA_CreativeWorld.unity
+    m_Enabled: 1
+    m_Guid: 00000000000000000000000000000008

@@ -108,3 +108,4 @@ CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
 CREATE INDEX IF NOT EXISTS idx_profiles_user ON player_profiles(user_id);
 CREATE INDEX IF NOT EXISTS idx_inventory_user ON player_inventory(user_id);
 CREATE INDEX IF NOT EXISTS idx_transactions_user ON financial_transactions(user_id);
+

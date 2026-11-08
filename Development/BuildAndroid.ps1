@@ -82,3 +82,4 @@ if ($process.ExitCode -eq 0 -and (Test-Path $apkPath)) {
     }
     exit 1
 }
+

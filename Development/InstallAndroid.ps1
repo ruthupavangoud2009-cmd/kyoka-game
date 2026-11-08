@@ -101,3 +101,4 @@ if ($installResult -match "Success") {
 } else {
     Write-Host "[FAILED] Installation failed: $installResult" -ForegroundColor Red
 }
+

@@ -20,3 +20,4 @@ This document tracks all acknowledged technical limitations, environmental const
 
 ## 4. Input System Configuration
 - Both Unity Input System and legacy Input Manager are enabled via `activeInputHandler: 2` in `ProjectSettings.asset`. `KyokaInputBridge.cs` unifies all input events so that gameplay logic does not rely directly on raw keyboard polling.
+

@@ -81,3 +81,4 @@ Output is created at `Builds/Android/KYOKA.apk`.
 3. Tap on `KYOKA.apk`.
 4. If prompted, allow "Install Unknown Apps" for Files.
 5. Tap **Install**, then tap **Open** to play KYOKA!
+

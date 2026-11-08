@@ -88,3 +88,4 @@ graph TD
 - `KyokaSaveSystem.cs`: Atomic file serialization with automatic backup creation (`kyoka_save.bak`) to prevent corruption.
 - `KyokaEconomyManager.cs`: Encapsulates `ITransactionValidator` to detect and reject fraudulent client-side currency tampering.
 - `Database/schema.sql`: Full relational schema for PostgreSQL backend integration.
+

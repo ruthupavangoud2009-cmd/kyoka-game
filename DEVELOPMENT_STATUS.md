@@ -61,3 +61,4 @@ Every system and component in KYOKA is strictly tracked under one of the defined
 
 ## Current Status Notes
 All C# source code, scenes, project settings, packages, and automation tools are fully written, wired, and verified with zero syntax errors. Once opened in Unity 6, compilation and binary packaging can proceed immediately using the provided one-click menus or PowerShell scripts.
+

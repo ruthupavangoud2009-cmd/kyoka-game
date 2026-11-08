@@ -50,3 +50,4 @@ namespace Kyoka.Vehicles
         }
     }
 }
+

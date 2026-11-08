@@ -94,3 +94,4 @@ namespace Kyoka.Character
         }
     }
 }
+
