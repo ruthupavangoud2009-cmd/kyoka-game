@@ -19,12 +19,9 @@ Recordings/
 *.svclog
 
 # Build binaries (GitHub Release targets)
-Builds/**/*.exe
-Builds/**/*.apk
-Builds/**/*.aab
-Builds/**/*_Data/
-Builds/**/*.pdb
-Builds/**/*.log
+Builds/
+!Builds/Windows/PLAY_KYOKA.bat
+!Builds/Windows/README.txt
 *.log
 
 # OS generated

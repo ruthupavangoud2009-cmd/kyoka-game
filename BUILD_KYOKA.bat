@@ -29,13 +29,17 @@ echo [STEP 2/3] Checking Unity 6 Installation...
 set "UNITY_PATH="
 for /d %%U in ("C:\Program Files\Unity\Hub\Editor\6000.*") do (
     if exist "%%U\Editor\Unity.exe" (
-        set "UNITY_PATH=%%U\Editor\Unity.exe"
+        if exist "%%U\Editor\Data\Resources\PackageManager\Server\UnityPackageManager.exe" (
+            set "UNITY_PATH=%%U\Editor\Unity.exe"
+        )
     )
 )
 if not defined UNITY_PATH (
     for /d %%U in ("C:\Program Files\Unity\Hub\Editor\*") do (
         if exist "%%U\Editor\Unity.exe" (
-            set "UNITY_PATH=%%U\Editor\Unity.exe"
+            if exist "%%U\Editor\Data\Resources\PackageManager\Server\UnityPackageManager.exe" (
+                set "UNITY_PATH=%%U\Editor\Unity.exe"
+            )
         )
     )
 )

@@ -22,13 +22,21 @@ Set-Location $projectDir
 # 1. Locate Unity
 if (-not $UnityPath) {
     $unityCandidates = @(
-        "C:\Program Files\Unity\Hub\Editor\6000.0.*\Editor\Unity.exe",
         "C:\Program Files\Unity\Hub\Editor\*\Editor\Unity.exe",
         "C:\Program Files (x86)\Unity\Hub\Editor\*\Editor\Unity.exe",
         "D:\Unity\*\Editor\Unity.exe"
     )
-    $found = Resolve-Path $unityCandidates -ErrorAction SilentlyContinue | Select-Object -First 1
-    if ($found) { $UnityPath = $found.Path }
+    $installed = Resolve-Path $unityCandidates -ErrorAction SilentlyContinue | Sort-Object -Descending
+    foreach ($c in $installed) {
+        $pmServer = Join-Path (Split-Path $c.Path) "Data\Resources\PackageManager\Server\UnityPackageManager.exe"
+        if (Test-Path $pmServer) {
+            $UnityPath = $c.Path
+            break
+        }
+    }
+    if (-not $UnityPath -and $installed) {
+        $UnityPath = $installed[0].Path
+    }
 }
 
 if (-not $UnityPath -or -not (Test-Path $UnityPath)) {

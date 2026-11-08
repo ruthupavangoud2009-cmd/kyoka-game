@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using UnityEditor;
+using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 using System.IO;
@@ -102,7 +103,7 @@ namespace Kyoka.Editor
 
             Debug.Log($"[KYOKA Validate] Manifest present: {hasManifest}");
             Debug.Log($"[KYOKA Validate] Bootstrap scene present: {hasScenes}");
-            Debug.Log($"[KYOKA Validate] Active Input Handling: {PlayerSettings.activeInputHandler}");
+            Debug.Log($"[KYOKA Validate] Product Name: {PlayerSettings.productName}");
             Debug.Log($"[KYOKA Validate] Bundle Identifier: {PlayerSettings.applicationIdentifier}");
 
             Debug.Log("[KYOKA Validate] Project validation completed.");

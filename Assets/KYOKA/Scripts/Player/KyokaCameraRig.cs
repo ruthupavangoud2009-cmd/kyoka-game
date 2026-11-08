@@ -114,7 +114,7 @@ namespace Kyoka.Player
             }
 
             // Third person: SphereCast backwards to prevent wall clipping
-            Vector3 desiredDirection = -targetRotation * Vector3.forward;
+            Vector3 desiredDirection = -(targetRotation * Vector3.forward);
             float targetDist = thirdPersonDistance;
 
             if (Physics.SphereCast(pivot, sphereRadius, desiredDirection, out RaycastHit hit, thirdPersonDistance, collisionMask))
