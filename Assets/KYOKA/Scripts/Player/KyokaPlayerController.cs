@@ -39,10 +39,20 @@ namespace Kyoka.Player
         public bool IsClimbing { get; set; }
         public bool IsCrouching { get; private set; }
 
+        [Header("Tactical Slide")]
+        public float slideSpeed = 13.5f;
+        public float slideDuration = 0.65f;
+        private float slideTimer = 0f;
+        public bool IsSliding => slideTimer > 0f;
+
         private CharacterController controller;
         private Vector3 verticalVelocity;
         private float yaw;
         private bool inputEnabled = true;
+
+        private Kyoka.Character.KyokaProceduralAnimator anim;
+        private Kyoka.Character.KyokaCharacterModel characterModel;
+        private Kyoka.Combat.KyokaCombatSystem combatSystem;
 
         public bool InputEnabled { get => inputEnabled; set => inputEnabled = value; }
 
@@ -50,6 +60,9 @@ namespace Kyoka.Player
         {
             controller = GetComponent<CharacterController>();
             yaw = transform.eulerAngles.y;
+            anim = GetComponent<Kyoka.Character.KyokaProceduralAnimator>();
+            characterModel = GetComponent<Kyoka.Character.KyokaCharacterModel>();
+            combatSystem = GetComponent<Kyoka.Combat.KyokaCombatSystem>();
         }
 
         private void Update()
@@ -63,7 +76,31 @@ namespace Kyoka.Player
             bool jump = input != null && input.JumpPressed;
             bool crouch = input != null && input.CrouchPressed;
 
-            if (crouch)
+            // Weapon switching hotkeys
+            if (Input.GetKeyDown(KeyCode.Alpha1)) SwitchWeapon("AssaultRifle");
+            if (Input.GetKeyDown(KeyCode.Alpha2)) SwitchWeapon("Shotgun");
+            if (Input.GetKeyDown(KeyCode.Alpha3)) SwitchWeapon("Sniper");
+            if (Input.GetKeyDown(KeyCode.Alpha4)) SwitchWeapon("Katana");
+
+            // Tactical Slide (Sprint + Crouch)
+            if (sprint && crouch && controller.isGrounded && slideTimer <= 0f)
+            {
+                slideTimer = slideDuration;
+                controller.height = 0.9f;
+                controller.center = new Vector3(0, 0.45f, 0);
+            }
+
+            if (slideTimer > 0f)
+            {
+                slideTimer -= Time.deltaTime;
+                if (slideTimer <= 0f && !IsCrouching)
+                {
+                    controller.height = 1.8f;
+                    controller.center = new Vector3(0, 0.9f, 0);
+                }
+            }
+
+            if (crouch && slideTimer <= 0f)
             {
                 IsCrouching = !IsCrouching;
                 controller.height = IsCrouching ? 1.2f : 1.8f;
@@ -86,6 +123,20 @@ namespace Kyoka.Player
             {
                 HandleStandardMovement(moveVec, jump, sprint);
             }
+
+            // Synchronize with Procedural Joint Animator
+            if (anim != null)
+            {
+                anim.moveSpeed = controller.velocity.magnitude;
+                anim.isGrounded = controller.isGrounded;
+                anim.isAiming = (Input.GetMouseButton(1) || (input != null && input.DefendHeld));
+            }
+        }
+
+        public void SwitchWeapon(string weaponId)
+        {
+            if (characterModel != null) characterModel.EquipWeapon(weaponId);
+            Kyoka.Audio.KyokaAudioManager.Instance?.PlaySoundEffect(Kyoka.Audio.SoundEffectType.Reload);
         }
 
         private void HandleStandardMovement(Vector2 moveVec, bool jump, bool sprint)
@@ -95,7 +146,12 @@ namespace Kyoka.Player
 
             // Determine speed
             float targetSpeed = walkSpeed;
-            if (IsCrouching)
+            if (IsSliding)
+            {
+                targetSpeed = slideSpeed;
+                moveDirection = transform.forward; // Lock forward trajectory during slide
+            }
+            else if (IsCrouching)
             {
                 targetSpeed = crouchSpeed;
                 currentState = PlayerMovementState.Crouching;

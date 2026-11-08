@@ -28,7 +28,7 @@ namespace Kyoka.Core
         {
             if (Instance != null && Instance != this) { Destroy(gameObject); return; }
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            if (transform.parent == null) DontDestroyOnLoad(gameObject);
 
             EnsureEventSystem();
             EnsureAudioManager();
@@ -94,6 +94,12 @@ namespace Kyoka.Core
             SaveAll("4_BattleRoyale.png");
             Debug.Log("[KYOKA Capture] Captured 4_BattleRoyale.png");
 
+            yield return new WaitForSeconds(0.8f);
+            HandleStartGame(LobbyGameMode.OpenWorldCity);
+            yield return new WaitForSeconds(2.0f);
+            SaveAll("5_OpenWorld.png");
+            Debug.Log("[KYOKA Capture] Captured 5_OpenWorld.png");
+
             yield return new WaitForSeconds(1.0f);
             Debug.Log("[KYOKA Capture] All screenshots captured successfully!");
             Application.Quit();
@@ -106,7 +112,7 @@ namespace Kyoka.Core
                 var esGO = new GameObject("EventSystem");
                 esGO.AddComponent<EventSystem>();
                 esGO.AddComponent<StandaloneInputModule>();
-                DontDestroyOnLoad(esGO);
+                if (esGO.transform.parent == null) DontDestroyOnLoad(esGO);
             }
         }
 
@@ -194,6 +200,7 @@ namespace Kyoka.Core
             var wm = activeWorldInstance.AddComponent<KyokaWorldManager>();
             var wb = activeWorldInstance.AddComponent<KyokaWorldBootstrap>();
             var pb = activeWorldInstance.AddComponent<KyokaPlayerBootstrap>();
+            var hud = activeWorldInstance.AddComponent<KyokaHUD>();
         }
 
         private void CleanupActiveViews()

@@ -4,6 +4,33 @@ All notable changes across development phases are documented in this file.
 
 ---
 
+## [2.0.0-EXTREME-GRAPHICS-OVERHAUL] — 2026-11-08
+
+### Fixed & Audited
+- **BUG-001 (DontDestroyOnLoad Warnings)**: Eliminated 7 `DontDestroyOnLoad only works for root GameObjects` warnings by guarding all singleton managers with `if (transform.parent == null)` and attaching them directly to root `KYOKA_Runtime`.
+- **BUG-002 (Open World Primitive Capsule)**: Replaced blank capsule primitive with customized 3D humanoid character model (`KyokaCharacterModel`) and procedural joint animator (`KyokaProceduralAnimator`).
+- **BUG-003 (Static Player Locomotion)**: Connected `KyokaProceduralAnimator` to `KyokaPlayerController` velocity, driving dynamic walking, running, and jumping cycles in real time.
+- **BUG-004 (Suppressed Open World HUD)**: Replaced disabled legacy IMGUI HUD with a modern uGUI canvas HUD displaying health, stamina, hotbar slots, quest tracker, and crosshairs.
+- **BUG-005 (Missing Return-to-Lobby Loop)**: Added interactive Pause Menu (`Esc` / Mobile pause button) with Resume, Save Game, and Return to Lobby options.
+- **BUG-006 (Generic Cubes Building)**: Upgraded building system to modular base construction with 7 pieces (Foundation, Wall, Doorway, Roof, Chest, Barricade, Crafting Table), 3m grid snapping, 90° rotation (`R`), and deconstruction (`Right Click`).
+- **BUG-007 (Primitive World Regions)**: Upgraded world generation with stylized skyscrapers, neon cornices, multi-cluster branching trees, faceted crystalline rocks, 3D humanoid NPCs, and fast-travel teleport portals.
+
+### Added
+- **Tactical Movement & Combat**:
+  - Tactical sliding: sprint + crouch triggers a 13.5 m/s low-profile slide with camera lowering.
+  - Weapon hotkeys: instant switching between Assault Rifle (`1`), Shotgun (`2`), Sniper (`3`), Katana (`4`), and Pickaxe (`5`).
+  - Connected `KyokaSoundBank` audio for gunshots, slashes, reloads, and hitmarkers.
+- **Minecraft-Inspired Open World Survival**:
+  - Interactive resource nodes: Trees (Wood Logs), Rocks (Cobblestone), Iron Veins (Iron Ore), and Crystal Formations (Aether Shards).
+  - Progressive harvesting: multi-hit durability, hit recoil wobbles, impact audio SFX, and loot rewards.
+  - Expanded crafting recipes: Tools (Stone Pickaxe, Iron Katana), Consumables (Health Pack, Energy Vial), and Building Pieces.
+  - Modular base construction: grid placement, piece rotation, and deconstruction.
+- **Documentation & QA**:
+  - `TEST_REPORT.md`: Comprehensive bug tracker with Root Cause, Files Changed, Fix, and QA Verification.
+  - `ASSET_CREDITS.md`: ₹0 budget attribution, original procedural generation documentation, and legal policy.
+
+---
+
 ## [1.2.0-CROSS-PLATFORM-EXPERIENCE] — 2026-11-08
 
 ### Added

@@ -36,26 +36,23 @@ namespace Kyoka.Core
             DontDestroyOnLoad(gameObject);
 
             // Core Foundation & Input
-            EnsureComponent<KyokaInputBridge>("InputBridge");
-            EnsureComponent<KyokaAudioManager>("AudioManager");
-            EnsureComponent<KyokaEconomyManager>("EconomyManager");
-            EnsureComponent<KyokaShopManager>("ShopManager");
-            EnsureComponent<KyokaSocialManager>("SocialManager");
-            EnsureComponent<KyokaNetworkManager>("NetworkManager");
-            EnsureComponent<KyokaBackendClient>("BackendClient");
+            EnsureComponent<KyokaInputBridge>();
+            EnsureComponent<KyokaAudioManager>();
+            EnsureComponent<KyokaEconomyManager>();
+            EnsureComponent<KyokaShopManager>();
+            EnsureComponent<KyokaSocialManager>();
+            EnsureComponent<KyokaNetworkManager>();
+            EnsureComponent<KyokaBackendClient>();
 
             // Master Game Flow Coordinator (Title -> Character Customizer -> 3D Lobby -> Battle Royale / Open World)
-            EnsureComponent<KyokaMasterGameController>("MasterGameController");
+            EnsureComponent<KyokaMasterGameController>();
         }
 
-        private T EnsureComponent<T>(string goName) where T : Component
+        private T EnsureComponent<T>() where T : Component
         {
             T existing = FindObjectOfType<T>();
             if (existing != null) return existing;
-
-            var go = new GameObject(goName);
-            go.transform.SetParent(transform);
-            return go.AddComponent<T>();
+            return gameObject.AddComponent<T>();
         }
     }
 }

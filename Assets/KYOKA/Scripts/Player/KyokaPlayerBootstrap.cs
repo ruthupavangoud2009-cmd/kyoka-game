@@ -14,18 +14,18 @@ namespace Kyoka.Player
         {
             if (FindObjectOfType<KyokaPlayerController>() != null) return;
 
-            var player = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            player.name = "KYOKA_Player";
+            var player = new GameObject("KYOKA_Player");
             player.tag = "Player";
             player.transform.position = new Vector3(0, 2, 0);
-
-            var oldCollider = player.GetComponent<CapsuleCollider>();
-            if (oldCollider) Destroy(oldCollider);
 
             var controller = player.AddComponent<CharacterController>();
             controller.height = 1.8f;
             controller.radius = 0.35f;
             controller.center = new Vector3(0, 0.9f, 0);
+
+            // 3D Humanoid Character Model & Procedural Animator
+            var model = player.AddComponent<KyokaCharacterModel>();
+            var anim = player.AddComponent<KyokaProceduralAnimator>();
 
             var health = player.AddComponent<KyokaHealth>();
             health.maxHealth = 100;
@@ -41,10 +41,20 @@ namespace Kyoka.Player
             player.AddComponent<KyokaVehicleInteractor>();
             player.AddComponent<KyokaCharacterCustomization>();
 
-            // Load saved position and stats if available
+            // Load saved character customization and stats
             var save = KyokaSaveSystem.Load();
             if (save != null)
             {
+                if (save.customization != null && save.customization.hasCreatedCharacter)
+                {
+                    model.isFemale = save.customization.isFemale;
+                    model.currentHairStyle = (HairStyleType)save.customization.hairStyleIndex;
+                    model.currentHairColor = new Color(save.customization.hairR, save.customization.hairG, save.customization.hairB);
+                    model.currentSkinColor = new Color(save.customization.skinR, save.customization.skinG, save.customization.skinB);
+                    model.currentOutfit = (OutfitPreset)save.customization.outfitIndex;
+                    model.BuildHumanoidMesh();
+                }
+
                 if (save.hasSavedPosition)
                 {
                     player.transform.position = new Vector3(save.posX, save.posY, save.posZ);
@@ -59,6 +69,8 @@ namespace Kyoka.Player
                 var custom = player.GetComponent<KyokaCharacterCustomization>();
                 if (custom != null) custom.LoadFrom(save);
             }
+
+            model.EquipWeapon("AssaultRifle");
 
             // Spawn platform marker
             var marker = GameObject.CreatePrimitive(PrimitiveType.Cube);

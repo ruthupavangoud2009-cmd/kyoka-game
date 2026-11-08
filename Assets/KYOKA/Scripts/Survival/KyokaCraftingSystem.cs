@@ -24,13 +24,55 @@ namespace Kyoka.Survival
         {
             if (recipes.Count == 0)
             {
+                // Basic Consumables & Medicine
                 recipes.Add(CreateRecipe("craft_health_pack", "health_pack", 1, new[] {
-                    new KyokaRecipeIngredient { itemId = "wood", amount = 2 },
-                    new KyokaRecipeIngredient { itemId = "stone", amount = 1 }
+                    new KyokaRecipeIngredient { itemId = "fiber", amount = 2 },
+                    new KyokaRecipeIngredient { itemId = "sapling", amount = 1 }
                 }));
 
                 recipes.Add(CreateRecipe("craft_energy_vial", "energy_vial", 1, new[] {
-                    new KyokaRecipeIngredient { itemId = "stone", amount = 3 }
+                    new KyokaRecipeIngredient { itemId = "crystal_dust", amount = 2 },
+                    new KyokaRecipeIngredient { itemId = "cobblestone", amount = 1 }
+                }));
+
+                // Harvesting Tools
+                recipes.Add(CreateRecipe("craft_stone_pickaxe", "stone_pickaxe", 1, new[] {
+                    new KyokaRecipeIngredient { itemId = "wood_log", amount = 3 },
+                    new KyokaRecipeIngredient { itemId = "cobblestone", amount = 4 }
+                }));
+
+                recipes.Add(CreateRecipe("craft_iron_katana", "iron_katana", 1, new[] {
+                    new KyokaRecipeIngredient { itemId = "wood_log", amount = 2 },
+                    new KyokaRecipeIngredient { itemId = "iron_ore", amount = 5 }
+                }));
+
+                // Modular Base Building Structures
+                recipes.Add(CreateRecipe("craft_wood_foundation", "wood_foundation", 1, new[] {
+                    new KyokaRecipeIngredient { itemId = "wood_log", amount = 4 }
+                }));
+
+                recipes.Add(CreateRecipe("craft_wood_wall", "wood_wall", 1, new[] {
+                    new KyokaRecipeIngredient { itemId = "wood_log", amount = 3 }
+                }));
+
+                recipes.Add(CreateRecipe("craft_wood_doorway", "wood_doorway", 1, new[] {
+                    new KyokaRecipeIngredient { itemId = "wood_log", amount = 3 },
+                    new KyokaRecipeIngredient { itemId = "cobblestone", amount = 1 }
+                }));
+
+                recipes.Add(CreateRecipe("craft_wood_roof", "wood_roof", 1, new[] {
+                    new KyokaRecipeIngredient { itemId = "wood_log", amount = 2 },
+                    new KyokaRecipeIngredient { itemId = "fiber", amount = 2 }
+                }));
+
+                recipes.Add(CreateRecipe("craft_storage_chest", "storage_chest", 1, new[] {
+                    new KyokaRecipeIngredient { itemId = "wood_log", amount = 4 },
+                    new KyokaRecipeIngredient { itemId = "flint", amount = 2 }
+                }));
+
+                recipes.Add(CreateRecipe("craft_defensive_barricade", "defensive_barricade", 1, new[] {
+                    new KyokaRecipeIngredient { itemId = "wood_log", amount = 2 },
+                    new KyokaRecipeIngredient { itemId = "cobblestone", amount = 3 }
                 }));
             }
         }

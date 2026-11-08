@@ -41,7 +41,7 @@ namespace Kyoka.Audio
         {
             if (Instance != null && Instance != this) { Destroy(gameObject); return; }
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            if (transform.parent == null) DontDestroyOnLoad(gameObject);
 
             InitializeAudioSources();
         }
