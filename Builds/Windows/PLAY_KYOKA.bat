@@ -7,3 +7,4 @@ if exist "KYOKA.exe" (
     echo Error: KYOKA.exe not found in this directory.
     pause
 )
+

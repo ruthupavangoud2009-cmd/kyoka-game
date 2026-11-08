@@ -28,3 +28,4 @@ powershell -ExecutionPolicy Bypass -File "Development\InstallAndroid.ps1" -Confi
 
 echo.
 pause
+

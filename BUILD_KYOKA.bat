@@ -76,3 +76,4 @@ if exist "Builds\Windows\KYOKA.exe" (
 )
 
 pause
+
