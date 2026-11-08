@@ -118,8 +118,16 @@ namespace Kyoka.UI
             pedestalTransform = pedGO.transform;
             Destroy(pedGO.GetComponent<Collider>());
 
-            var pedMat = KyokaMaterialFactory.CreateLit(new Color(0.18f, 0.22f, 0.28f), KyokaTextureGenerator.GetCyberGridTexture());
+            var pedMat = KyokaMaterialFactory.CreateLit(new Color(0.18f, 0.22f, 0.28f), KyokaTextureGenerator.GetHangarFloorTexture());
             pedGO.GetComponent<Renderer>().material = pedMat;
+
+            var pedRing = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            pedRing.name = "Pedestal_Ring";
+            pedRing.transform.SetParent(pedestalTransform, false);
+            pedRing.transform.localPosition = new Vector3(0, -0.45f, 0);
+            pedRing.transform.localScale = new Vector3(1.05f, 0.20f, 1.05f);
+            Destroy(pedRing.GetComponent<Collider>());
+            pedRing.GetComponent<Renderer>().material = KyokaMaterialFactory.CreateEmissionMaterial(new Color(0.12f, 0.85f, 0.95f), 0.9f);
 
             // Character Model
             var charGO = new GameObject("Customizer_Character");

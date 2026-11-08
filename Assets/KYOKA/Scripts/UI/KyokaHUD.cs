@@ -105,7 +105,7 @@ namespace Kyoka.UI
             scaler.matchWidthOrHeight = 0.5f;
 
             canvasGO.AddComponent<GraphicRaycaster>();
-            var font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf") ?? Resources.GetBuiltinResource<Font>("Arial.ttf");
+            var font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf") ?? Resources.GetBuiltinResource<Font>("Arial.ttf") ?? Font.CreateDynamicFontFromOSFont("Arial", 14);
 
             // ================= TOP REGION BAR =================
             var topBar = CreateUIObject("TopBar", canvasGO.transform);
@@ -415,6 +415,7 @@ namespace Kyoka.UI
         {
             var go = new GameObject(name);
             go.transform.SetParent(parent, false);
+            if (go.GetComponent<RectTransform>() == null) go.AddComponent<RectTransform>();
             return go;
         }
 

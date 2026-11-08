@@ -91,7 +91,7 @@ namespace Kyoka.BattleRoyale
         private RectTransform minimapStormCircle;
         private float hitmarkerTimer = 0f;
 
-        private float cameraPitch = 12f;
+        private float cameraPitch = 16f;
         private float cameraYaw = 0f;
 
         private void Awake()
@@ -197,7 +197,8 @@ namespace Kyoka.BattleRoyale
         private void SpawnPlayer()
         {
             playerGO = new GameObject("BR_Player");
-            playerGO.transform.position = new Vector3(UnityEngine.Random.Range(-30f, 30f), 120f, UnityEngine.Random.Range(-30f, 30f));
+            playerGO.transform.position = new Vector3(0, 42f, -20f);
+            playerGO.transform.SetParent(worldRoot.transform, true);
 
             playerController = playerGO.AddComponent<CharacterController>();
             playerController.height = 1.8f;
@@ -224,19 +225,14 @@ namespace Kyoka.BattleRoyale
                 );
             }
 
-            // Spawn Cyber Glider attached above player's shoulders
-            gliderObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            gliderObject.name = "CyberGlider";
+            // Spawn High-Detail Cyber Delta-Wing Glider attached above player's shoulders
+            gliderObject = KyokaMeshBuilder.CreateDetailedGlider();
             gliderObject.transform.SetParent(playerGO.transform, false);
-            gliderObject.transform.localPosition = new Vector3(0, 2.1f, 0);
-            gliderObject.transform.localScale = new Vector3(3.4f, 0.08f, 1.4f);
-            Destroy(gliderObject.GetComponent<Collider>());
-
-            var gMat = KyokaMaterialFactory.CreateLit(new Color(0.15f, 0.85f, 0.95f), KyokaTextureGenerator.GetGliderTexture());
-            gliderObject.GetComponent<Renderer>().material = gMat;
+            gliderObject.transform.localPosition = new Vector3(0, 1.88f, 0.12f);
 
             // Combat Camera
             var camGO = new GameObject("Combat_Camera");
+            camGO.transform.SetParent(worldRoot.transform, true);
             combatCamera = camGO.AddComponent<Camera>();
             combatCamera.clearFlags = CameraClearFlags.Skybox;
             combatCamera.fieldOfView = 65f;
@@ -339,6 +335,7 @@ namespace Kyoka.BattleRoyale
             {
                 var bot = new GameObject($"Bot_{botNames[i]}");
                 bot.transform.position = botPositions[i];
+                bot.transform.SetParent(worldRoot.transform, true);
 
                 var charModel = bot.AddComponent<KyokaCharacterModel>();
                 bot.AddComponent<KyokaProceduralAnimator>();
@@ -901,6 +898,36 @@ namespace Kyoka.BattleRoyale
             rt.anchorMax = Vector2.one;
             rt.offsetMin = Vector2.zero;
             rt.offsetMax = Vector2.zero;
+        }
+
+        private void OnDestroy()
+        {
+            if (Instance == this) Instance = null;
+            if (playerGO != null) Destroy(playerGO);
+            if (combatCamera != null) Destroy(combatCamera.gameObject);
+            if (canvasGO != null) Destroy(canvasGO);
+            if (worldRoot != null) Destroy(worldRoot);
+
+            if (activeBots != null)
+            {
+                foreach (var b in activeBots)
+                {
+                    if (b != null) Destroy(b);
+                }
+                activeBots.Clear();
+            }
+
+            if (activeLootPickups != null)
+            {
+                foreach (var l in activeLootPickups)
+                {
+                    if (l != null) Destroy(l);
+                }
+                activeLootPickups.Clear();
+            }
+
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
 
         #endregion

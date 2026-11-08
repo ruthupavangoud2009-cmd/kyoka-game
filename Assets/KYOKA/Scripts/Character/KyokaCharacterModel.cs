@@ -21,12 +21,14 @@ namespace Kyoka.Character
     }
 
     /// <summary>
-    /// Constructs a modular, stylized 3D anime/cyberpunk humanoid character.
-    /// Provides customizable hair, skin, face, clothing presets, and modular weapon sockets.
+    /// Constructs a high-detail, stylized 3D anime humanoid character for KYOKA.
+    /// Features sculpted facial contours, layered volumetric hair clumps,
+    /// tailored tactical outfit weaves, seamless anatomical joints, combat boots,
+    /// and modular weapon attachments.
     /// </summary>
     public class KyokaCharacterModel : MonoBehaviour
     {
-        [Header("Modular Nodes")]
+        [Header("Modular Skeletal Nodes")]
         public Transform rootNode;
         public Transform hipsNode;
         public Transform spineNode;
@@ -46,10 +48,11 @@ namespace Kyoka.Character
         public Transform rightHandWeaponSocket;
         public Transform backWeaponSocket;
 
-        [Header("Renderers for Coloring")]
+        [Header("Renderers for Dynamic Styling")]
         public Renderer headRenderer;
         public Renderer hairRenderer;
         public Renderer chestRenderer;
+        public Renderer waistRenderer;
         public Renderer pantsRenderer;
         public Renderer bootsRenderer;
         public Renderer leftArmRenderer;
@@ -60,6 +63,8 @@ namespace Kyoka.Character
         public Renderer rightLegRenderer;
         public Renderer leftFootRenderer;
         public Renderer rightFootRenderer;
+        public Renderer collarRenderer;
+        public Renderer neckRenderer;
         public GameObject currentHairObject;
         public GameObject currentEquippedWeaponObject;
 
@@ -90,107 +95,109 @@ namespace Kyoka.Character
             float scaleW = isFemale ? 0.88f : 1.0f;
             float scaleH = isFemale ? 0.94f : 1.0f;
 
-            // Hips / Pelvis
-            hipsNode = CreatePivot("Hips", rootNode, new Vector3(0, 0.95f * scaleH, 0));
-            var pelvis = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            pelvis.name = "Mesh_Pelvis";
-            pelvis.transform.SetParent(hipsNode, false);
-            pelvis.transform.localScale = new Vector3(0.32f * scaleW, 0.22f, 0.22f);
-            Destroy(pelvis.GetComponent<Collider>());
-            pantsRenderer = pelvis.GetComponent<Renderer>();
+            // 1. Pelvis / Hips
+            hipsNode = CreatePivot("Hips", rootNode, new Vector3(0, 0.88f * scaleH, 0));
+            var pelvisGO = CreateMeshChild("Mesh_Pelvis", hipsNode, KyokaMeshBuilder.CreateLimbSegmentMesh(0.17f * scaleW, 0.18f * scaleW, 0.16f * scaleW, 0.22f, 10));
+            pelvisGO.transform.localPosition = new Vector3(0, 0, 0);
+            pantsRenderer = pelvisGO.GetComponent<Renderer>();
 
-            // Spine & Chest
-            spineNode = CreatePivot("Spine", hipsNode, new Vector3(0, 0.2f, 0));
-            chestNode = CreatePivot("Chest", spineNode, new Vector3(0, 0.22f, 0));
+            // 2. Spine & Abdominal Waist (Seamless Bridge - NO GAPS)
+            spineNode = CreatePivot("Spine", hipsNode, new Vector3(0, 0.14f, 0));
+            var waistGO = CreateMeshChild("Mesh_Waist", spineNode, KyokaMeshBuilder.CreateLimbSegmentMesh(0.16f * scaleW, 0.145f * scaleW, 0.168f * scaleW, 0.20f, 10));
+            waistGO.transform.localPosition = new Vector3(0, 0.06f, 0);
+            waistRenderer = waistGO.GetComponent<Renderer>();
 
-            var chest = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            chest.name = "Mesh_Chest";
-            chest.transform.SetParent(chestNode, false);
-            chest.transform.localScale = new Vector3(0.38f * scaleW, 0.32f, 0.24f);
-            Destroy(chest.GetComponent<Collider>());
-            chestRenderer = chest.GetComponent<Renderer>();
+            // Tactical Combat Belt Buckle
+            var belt = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            belt.name = "Mesh_TacticalBelt";
+            belt.transform.SetParent(spineNode, false);
+            belt.transform.localPosition = new Vector3(0, 0.01f, 0.09f);
+            belt.transform.localScale = new Vector3(0.08f, 0.05f, 0.035f);
+            Destroy(belt.GetComponent<Collider>());
+            belt.GetComponent<Renderer>().material = KyokaMaterialFactory.CreateEmissionMaterial(new Color(0.12f, 0.85f, 0.95f), 1.6f);
 
-            // Tactical Neck & Head
-            neckNode = CreatePivot("Neck", chestNode, new Vector3(0, 0.22f, 0));
-            headNode = CreatePivot("Head", neckNode, new Vector3(0, 0.12f, 0));
+            // 3. Sculpted Chest / Torso
+            chestNode = CreatePivot("Chest", spineNode, new Vector3(0, 0.16f, 0));
+            var chestGO = CreateMeshChild("Mesh_Chest", chestNode, KyokaMeshBuilder.CreateTorsoMesh(0.36f * scaleW, 0.36f, 0.22f, isFemale));
+            chestGO.transform.localPosition = new Vector3(0, 0.10f, 0);
+            chestRenderer = chestGO.GetComponent<Renderer>();
 
-            var head = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            head.name = "Mesh_Head";
-            head.transform.SetParent(headNode, false);
-            head.transform.localRotation = Quaternion.Euler(0, 90f, 0);
-            head.transform.localScale = new Vector3(0.24f * scaleW, 0.26f, 0.24f);
-            Destroy(head.GetComponent<Collider>());
-            headRenderer = head.GetComponent<Renderer>();
+            // Tactical Collar Trim with Dark Armored Material (Fixed Magenta Issue)
+            var collar = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            collar.name = "Mesh_Collar";
+            collar.transform.SetParent(chestNode, false);
+            collar.transform.localPosition = new Vector3(0, 0.27f, 0.01f);
+            collar.transform.localScale = new Vector3(0.15f, 0.035f, 0.14f);
+            Destroy(collar.GetComponent<Collider>());
+            var collarMat = KyokaMaterialFactory.CreateLit(new Color(0.14f, 0.16f, 0.20f));
+            collar.GetComponent<Renderer>().material = collarMat;
+            collarRenderer = collar.GetComponent<Renderer>();
 
-            // Left Arm
-            leftShoulder = CreatePivot("LeftShoulder", chestNode, new Vector3(-0.24f * scaleW, 0.12f, 0));
-            leftArm = CreatePivot("LeftArm", leftShoulder, new Vector3(-0.04f, -0.16f, 0));
-            var lArmMesh = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            lArmMesh.transform.SetParent(leftArm, false);
-            lArmMesh.transform.localScale = new Vector3(0.11f, 0.22f, 0.11f);
-            Destroy(lArmMesh.GetComponent<Collider>());
-            leftArmRenderer = lArmMesh.GetComponent<Renderer>();
+            // 4. Neck & Sculpted Anime Head
+            neckNode = CreatePivot("Neck", chestNode, new Vector3(0, 0.28f, 0));
+            var neckGO = CreateMeshChild("Mesh_Neck", neckNode, KyokaMeshBuilder.CreateLimbSegmentMesh(0.062f, 0.058f, 0.065f, 0.10f, 8));
+            neckGO.transform.localPosition = new Vector3(0, 0.04f, 0);
+            neckRenderer = neckGO.GetComponent<Renderer>();
+
+            headNode = CreatePivot("Head", neckNode, new Vector3(0, 0.09f, 0));
+            var headMesh = KyokaMeshBuilder.CreateAnimeHeadMesh(0.24f * scaleW, 0.28f, 0.24f, isFemale);
+            var headGO = CreateMeshChild("Mesh_AnimeHead", headNode, headMesh);
+            headGO.transform.localPosition = new Vector3(0, 0.04f, 0);
+            headRenderer = headGO.GetComponent<Renderer>();
+
+            // 5. Left Arm & Hand
+            leftShoulder = CreatePivot("LeftShoulder", chestNode, new Vector3(-0.21f * scaleW, 0.22f, 0));
+            leftArm = CreatePivot("LeftArm", leftShoulder, new Vector3(-0.04f, -0.12f, 0));
+            var lArmGO = CreateMeshChild("Mesh_LeftArm", leftArm, KyokaMeshBuilder.CreateLimbSegmentMesh(0.065f, 0.060f, 0.052f, 0.26f, 10));
+            lArmGO.transform.localPosition = new Vector3(0, -0.09f, 0);
+            leftArmRenderer = lArmGO.GetComponent<Renderer>();
 
             leftHand = CreatePivot("LeftHand", leftArm, new Vector3(0, -0.24f, 0));
-            var lHandMesh = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            lHandMesh.transform.SetParent(leftHand, false);
-            lHandMesh.transform.localScale = new Vector3(0.08f, 0.10f, 0.08f);
-            Destroy(lHandMesh.GetComponent<Collider>());
-            leftHandRenderer = lHandMesh.GetComponent<Renderer>();
+            var lHandGO = CreateMeshChild("Mesh_LeftHand", leftHand, KyokaMeshBuilder.CreateLimbSegmentMesh(0.045f, 0.048f, 0.038f, 0.11f, 8));
+            lHandGO.transform.localPosition = new Vector3(0, -0.05f, 0);
+            leftHandRenderer = lHandGO.GetComponent<Renderer>();
 
-            // Right Arm (Weapon Arm)
-            rightShoulder = CreatePivot("RightShoulder", chestNode, new Vector3(0.24f * scaleW, 0.12f, 0));
-            rightArm = CreatePivot("RightArm", rightShoulder, new Vector3(0.04f, -0.16f, 0));
-            var rArmMesh = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            rArmMesh.transform.SetParent(rightArm, false);
-            rArmMesh.transform.localScale = new Vector3(0.11f, 0.22f, 0.11f);
-            Destroy(rArmMesh.GetComponent<Collider>());
-            rightArmRenderer = rArmMesh.GetComponent<Renderer>();
+            // 6. Right Arm (Weapon Arm) & Hand
+            rightShoulder = CreatePivot("RightShoulder", chestNode, new Vector3(0.21f * scaleW, 0.22f, 0));
+            rightArm = CreatePivot("RightArm", rightShoulder, new Vector3(0.04f, -0.12f, 0));
+            var rArmGO = CreateMeshChild("Mesh_RightArm", rightArm, KyokaMeshBuilder.CreateLimbSegmentMesh(0.065f, 0.060f, 0.052f, 0.26f, 10));
+            rArmGO.transform.localPosition = new Vector3(0, -0.09f, 0);
+            rightArmRenderer = rArmGO.GetComponent<Renderer>();
 
             rightHand = CreatePivot("RightHand", rightArm, new Vector3(0, -0.24f, 0));
-            var rHandMesh = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            rHandMesh.transform.SetParent(rightHand, false);
-            rHandMesh.transform.localScale = new Vector3(0.08f, 0.10f, 0.08f);
-            Destroy(rHandMesh.GetComponent<Collider>());
-            rightHandRenderer = rHandMesh.GetComponent<Renderer>();
+            var rHandGO = CreateMeshChild("Mesh_RightHand", rightHand, KyokaMeshBuilder.CreateLimbSegmentMesh(0.045f, 0.048f, 0.038f, 0.11f, 8));
+            rHandGO.transform.localPosition = new Vector3(0, -0.05f, 0);
+            rightHandRenderer = rHandGO.GetComponent<Renderer>();
 
             // Weapon Sockets
-            rightHandWeaponSocket = CreatePivot("RightHand_WeaponSocket", rightHand, new Vector3(0, -0.05f, 0.12f));
-            backWeaponSocket = CreatePivot("Back_WeaponSocket", chestNode, new Vector3(0.15f, 0, -0.18f));
+            rightHandWeaponSocket = CreatePivot("RightHand_WeaponSocket", rightHand, new Vector3(0, -0.04f, 0.08f));
+            backWeaponSocket = CreatePivot("Back_WeaponSocket", chestNode, new Vector3(0.14f, 0.12f, -0.16f));
             backWeaponSocket.localRotation = Quaternion.Euler(25, 45, 135);
 
-            // Left Leg
-            leftLeg = CreatePivot("LeftLeg", hipsNode, new Vector3(-0.11f * scaleW, -0.16f, 0));
-            var lLegMesh = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            lLegMesh.transform.SetParent(leftLeg, false);
-            lLegMesh.transform.localScale = new Vector3(0.13f, 0.36f, 0.13f);
-            Destroy(lLegMesh.GetComponent<Collider>());
-            leftLegRenderer = lLegMesh.GetComponent<Renderer>();
+            // 7. Left Leg & Tactical Boot
+            leftLeg = CreatePivot("LeftLeg", hipsNode, new Vector3(-0.10f * scaleW, -0.11f, 0));
+            var lLegGO = CreateMeshChild("Mesh_LeftLeg", leftLeg, KyokaMeshBuilder.CreateLimbSegmentMesh(0.078f, 0.072f, 0.058f, 0.44f, 10));
+            lLegGO.transform.localPosition = new Vector3(0, -0.20f, 0);
+            leftLegRenderer = lLegGO.GetComponent<Renderer>();
 
-            leftFoot = CreatePivot("LeftFoot", leftLeg, new Vector3(0, -0.42f, 0.05f));
-            var lFootMesh = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            lFootMesh.transform.SetParent(leftFoot, false);
-            lFootMesh.transform.localScale = new Vector3(0.12f, 0.10f, 0.22f);
-            Destroy(lFootMesh.GetComponent<Collider>());
-            leftFootRenderer = lFootMesh.GetComponent<Renderer>();
+            leftFoot = CreatePivot("LeftFoot", leftLeg, new Vector3(0, -0.44f, 0.02f));
+            var lBootGO = CreateMeshChild("Mesh_LeftBoot", leftFoot, KyokaMeshBuilder.CreateTacticalBootMesh(scaleW));
+            lBootGO.transform.localPosition = new Vector3(0, 0, 0);
+            leftFootRenderer = lBootGO.GetComponent<Renderer>();
             bootsRenderer = leftFootRenderer;
 
-            // Right Leg
-            rightLeg = CreatePivot("RightLeg", hipsNode, new Vector3(0.11f * scaleW, -0.16f, 0));
-            var rLegMesh = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-            rLegMesh.transform.SetParent(rightLeg, false);
-            rLegMesh.transform.localScale = new Vector3(0.13f, 0.36f, 0.13f);
-            Destroy(rLegMesh.GetComponent<Collider>());
-            rightLegRenderer = rLegMesh.GetComponent<Renderer>();
+            // 8. Right Leg & Tactical Boot
+            rightLeg = CreatePivot("RightLeg", hipsNode, new Vector3(0.10f * scaleW, -0.11f, 0));
+            var rLegGO = CreateMeshChild("Mesh_RightLeg", rightLeg, KyokaMeshBuilder.CreateLimbSegmentMesh(0.078f, 0.072f, 0.058f, 0.44f, 10));
+            rLegGO.transform.localPosition = new Vector3(0, -0.20f, 0);
+            rightLegRenderer = rLegGO.GetComponent<Renderer>();
 
-            rightFoot = CreatePivot("RightFoot", rightLeg, new Vector3(0, -0.42f, 0.05f));
-            var rFootMesh = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            rFootMesh.transform.SetParent(rightFoot, false);
-            rFootMesh.transform.localScale = new Vector3(0.12f, 0.10f, 0.22f);
-            Destroy(rFootMesh.GetComponent<Collider>());
-            rightFootRenderer = rFootMesh.GetComponent<Renderer>();
+            rightFoot = CreatePivot("RightFoot", rightLeg, new Vector3(0, -0.44f, 0.02f));
+            var rBootGO = CreateMeshChild("Mesh_RightBoot", rightFoot, KyokaMeshBuilder.CreateTacticalBootMesh(scaleW));
+            rBootGO.transform.localPosition = new Vector3(0, 0, 0);
+            rightFootRenderer = rBootGO.GetComponent<Renderer>();
 
-            // Apply procedural textures and colors
+            // Apply high-res procedural textures and outfits
             ApplyCustomization(currentHairStyle, currentHairColor, currentSkinColor, currentEyeColor, currentOutfit);
             EquipWeapon("AssaultRifle");
         }
@@ -203,23 +210,28 @@ namespace Kyoka.Character
             currentEyeColor = eyeColor;
             currentOutfit = outfit;
 
-            // 1. Face Material with Anime Eyes & Expression
+            // 1. Anime Facial Features & Skin Shader
             if (headRenderer != null)
             {
-                var faceTex = KyokaTextureGenerator.GetFaceTexture(skinColor, eyeColor);
+                var faceTex = KyokaTextureGenerator.GetFaceTexture(skinColor, eyeColor, isFemale);
                 var faceMat = KyokaMaterialFactory.CreateLit(Color.white, faceTex);
+                if (faceMat.HasProperty("_Smoothness")) faceMat.SetFloat("_Smoothness", 0.40f);
                 headRenderer.material = faceMat;
             }
 
-            // Skin Material for hands
+            // Skin material for hands and neck
             var skinMat = KyokaMaterialFactory.CreateLit(skinColor);
+            if (neckRenderer) neckRenderer.material = skinMat;
             if (leftHandRenderer) leftHandRenderer.material = skinMat;
             if (rightHandRenderer) rightHandRenderer.material = skinMat;
 
-            // 2. Build Hair
+            // Collar dark tactical material
+            if (collarRenderer) collarRenderer.material = KyokaMaterialFactory.CreateLit(new Color(0.14f, 0.16f, 0.20f));
+
+            // 2. Layered Volumetric Hair
             RebuildHair(hair, hairColor);
 
-            // 3. Outfit Material
+            // 3. Tailored Outfit Texture & Materials
             ApplyOutfitStyle(outfit);
         }
 
@@ -230,129 +242,119 @@ namespace Kyoka.Character
                 DestroyImmediate(currentHairObject);
             }
 
-            currentHairObject = new GameObject("HairRoot");
+            currentHairObject = new GameObject("Hair_Root");
             currentHairObject.transform.SetParent(headNode, false);
 
-            var hairMat = KyokaMaterialFactory.CreateLit(color);
+            var hairTex = KyokaTextureGenerator.GetHairTexture(color);
+            var hairMat = KyokaMaterialFactory.CreateLit(color, hairTex);
+            if (hairMat.HasProperty("_Smoothness")) hairMat.SetFloat("_Smoothness", 0.55f);
 
-            // Scalp hair base
+            // Scalp hair foundation cap
             var cap = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            cap.name = "Hair_ScalpCap";
             cap.transform.SetParent(currentHairObject.transform, false);
-            cap.transform.localPosition = new Vector3(0, 0.07f, -0.02f);
-            cap.transform.localScale = new Vector3(0.25f, 0.18f, 0.25f);
+            cap.transform.localPosition = new Vector3(0, 0.08f, -0.015f);
+            cap.transform.localScale = new Vector3(0.245f, 0.17f, 0.245f);
             cap.GetComponent<Renderer>().material = hairMat;
             Destroy(cap.GetComponent<Collider>());
+            hairRenderer = cap.GetComponent<Renderer>();
 
+            // Layered stylized clumps based on style
             switch (hair)
             {
                 case HairStyleType.SpikyAnime:
-                    // Anime bangs and crest
-                    for (int s = -2; s <= 2; s++)
+                    // 7 Swept Crown Spikes
+                    for (int i = -3; i <= 3; i++)
                     {
-                        var spike = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-                        spike.transform.SetParent(currentHairObject.transform, false);
-                        spike.transform.localPosition = new Vector3(s * 0.045f, 0.14f + (2 - Mathf.Abs(s)) * 0.02f, 0.05f - Mathf.Abs(s) * 0.03f);
-                        spike.transform.localRotation = Quaternion.Euler(35f + Mathf.Abs(s) * 10f, s * 15f, -s * 18f);
-                        spike.transform.localScale = new Vector3(0.04f, 0.10f, 0.04f);
-                        spike.GetComponent<Renderer>().material = hairMat;
-                        Destroy(spike.GetComponent<Collider>());
-                    }
-                    // Forehead framing bangs
-                    var lBang = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    lBang.transform.SetParent(currentHairObject.transform, false);
-                    lBang.transform.localPosition = new Vector3(-0.09f, 0.06f, 0.11f);
-                    lBang.transform.localRotation = Quaternion.Euler(15, -15, -20);
-                    lBang.transform.localScale = new Vector3(0.035f, 0.10f, 0.035f);
-                    lBang.GetComponent<Renderer>().material = hairMat;
-                    Destroy(lBang.GetComponent<Collider>());
+                        Vector3 root = new Vector3(i * 0.035f, 0.12f, 0.02f);
+                        Vector3 mid = new Vector3(i * 0.055f, 0.21f, 0.05f - Mathf.Abs(i) * 0.02f);
+                        Vector3 tip = new Vector3(i * 0.075f, 0.27f, 0.08f - Mathf.Abs(i) * 0.03f);
 
-                    var rBang = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    rBang.transform.SetParent(currentHairObject.transform, false);
-                    rBang.transform.localPosition = new Vector3(0.09f, 0.06f, 0.11f);
-                    rBang.transform.localRotation = Quaternion.Euler(15, 15, 20);
-                    rBang.transform.localScale = new Vector3(0.035f, 0.10f, 0.035f);
+                        var spikeGO = CreateMeshChild($"Spike_{i}", currentHairObject.transform,
+                            KyokaMeshBuilder.CreateHairClumpMesh(root, mid, tip, 0.035f, 0.045f, 0.01f, 0.03f));
+                        spikeGO.GetComponent<Renderer>().material = hairMat;
+                    }
+
+                    // Face-framing side bangs
+                    var lBang = CreateMeshChild("LeftBang", currentHairObject.transform,
+                        KyokaMeshBuilder.CreateHairClumpMesh(new Vector3(-0.08f, 0.10f, 0.09f), new Vector3(-0.11f, 0.01f, 0.11f), new Vector3(-0.09f, -0.07f, 0.10f), 0.03f, 0.035f, 0.008f));
+                    lBang.GetComponent<Renderer>().material = hairMat;
+
+                    var rBang = CreateMeshChild("RightBang", currentHairObject.transform,
+                        KyokaMeshBuilder.CreateHairClumpMesh(new Vector3(0.08f, 0.10f, 0.09f), new Vector3(0.11f, 0.01f, 0.11f), new Vector3(0.09f, -0.07f, 0.10f), 0.03f, 0.035f, 0.008f));
                     rBang.GetComponent<Renderer>().material = hairMat;
-                    Destroy(rBang.GetComponent<Collider>());
+
+                    // Forehead fringe
+                    var fringe = CreateMeshChild("CenterFringe", currentHairObject.transform,
+                        KyokaMeshBuilder.CreateHairClumpMesh(new Vector3(0, 0.12f, 0.10f), new Vector3(0.02f, 0.06f, 0.12f), new Vector3(0.03f, 0.01f, 0.12f), 0.04f, 0.035f, 0.008f));
+                    fringe.GetComponent<Renderer>().material = hairMat;
                     break;
 
                 case HairStyleType.CyberFade:
-                    var fadeTop = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    fadeTop.transform.SetParent(currentHairObject.transform, false);
-                    fadeTop.transform.localPosition = new Vector3(0, 0.14f, 0.02f);
-                    fadeTop.transform.localRotation = Quaternion.Euler(10, 0, 0);
-                    fadeTop.transform.localScale = new Vector3(0.18f, 0.08f, 0.20f);
-                    fadeTop.GetComponent<Renderer>().material = hairMat;
-                    Destroy(fadeTop.GetComponent<Collider>());
+                    var pompadour = CreateMeshChild("Pompadour", currentHairObject.transform,
+                        KyokaMeshBuilder.CreateHairClumpMesh(new Vector3(0, 0.10f, -0.08f), new Vector3(0, 0.19f, 0.04f), new Vector3(0, 0.22f, 0.11f), 0.09f, 0.10f, 0.04f, 0.06f));
+                    pompadour.GetComponent<Renderer>().material = hairMat;
+
+                    for (int s = -1; s <= 1; s += 2)
+                    {
+                        var panel = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                        panel.transform.SetParent(currentHairObject.transform, false);
+                        panel.transform.localPosition = new Vector3(s * 0.10f, 0.08f, 0.01f);
+                        panel.transform.localScale = new Vector3(0.025f, 0.09f, 0.18f);
+                        panel.GetComponent<Renderer>().material = KyokaMaterialFactory.CreateLit(color * 0.65f);
+                        Destroy(panel.GetComponent<Collider>());
+                    }
                     break;
 
                 case HairStyleType.SamuraiPonytail:
-                    var knot = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                    var mane = CreateMeshChild("Mane", currentHairObject.transform,
+                        KyokaMeshBuilder.CreateHairClumpMesh(new Vector3(0, 0.12f, 0.06f), new Vector3(0, 0.15f, -0.06f), new Vector3(0, 0.13f, -0.12f), 0.07f, 0.08f, 0.04f));
+                    mane.GetComponent<Renderer>().material = hairMat;
+
+                    var knot = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                    knot.name = "HairKnot";
                     knot.transform.SetParent(currentHairObject.transform, false);
-                    knot.transform.localPosition = new Vector3(0, 0.15f, -0.08f);
-                    knot.transform.localScale = new Vector3(0.08f, 0.08f, 0.08f);
-                    knot.GetComponent<Renderer>().material = hairMat;
+                    knot.transform.localPosition = new Vector3(0, 0.13f, -0.13f);
+                    knot.transform.localRotation = Quaternion.Euler(65, 0, 0);
+                    knot.transform.localScale = new Vector3(0.05f, 0.025f, 0.05f);
+                    knot.GetComponent<Renderer>().material = KyokaMaterialFactory.CreateEmissionMaterial(new Color(0.95f, 0.8f, 0.2f), 1.5f);
                     Destroy(knot.GetComponent<Collider>());
 
-                    var tail = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-                    tail.transform.SetParent(currentHairObject.transform, false);
-                    tail.transform.localPosition = new Vector3(0, 0.12f, -0.16f);
-                    tail.transform.localRotation = Quaternion.Euler(60, 0, 0);
-                    tail.transform.localScale = new Vector3(0.045f, 0.18f, 0.045f);
+                    var tail = CreateMeshChild("Ponytail", currentHairObject.transform,
+                        KyokaMeshBuilder.CreateHairClumpMesh(new Vector3(0, 0.13f, -0.14f), new Vector3(0, 0.02f, -0.22f), new Vector3(0, -0.14f, -0.26f), 0.045f, 0.05f, 0.01f));
                     tail.GetComponent<Renderer>().material = hairMat;
-                    Destroy(tail.GetComponent<Collider>());
                     break;
 
                 case HairStyleType.TacticalBuzzcut:
                 default:
-                    // Scalp cap provides clean tactical buzzcut look
                     break;
             }
         }
 
         private void ApplyOutfitStyle(OutfitPreset outfit)
         {
-            var chestMat = KyokaMaterialFactory.CreateLit(Color.white);
-            var pantsMat = KyokaMaterialFactory.CreateLit(Color.white);
-            var bootsMat = KyokaMaterialFactory.CreateLit(Color.white);
+            var outfitTex = KyokaTextureGenerator.GetOutfitTexture((int)outfit, isFemale);
+            var outfitMat = KyokaMaterialFactory.CreateLit(Color.white, outfitTex);
+            if (outfitMat.HasProperty("_Smoothness")) outfitMat.SetFloat("_Smoothness", 0.42f);
 
-            switch (outfit)
-            {
-                case OutfitPreset.UrbanStalker:
-                    chestMat.color = new Color(0.15f, 0.18f, 0.24f); // Slate charcoal
-                    pantsMat.color = new Color(0.10f, 0.12f, 0.16f); // Deep tactical black
-                    bootsMat.color = new Color(0.20f, 0.22f, 0.25f);
-                    break;
+            var bootMat = KyokaMaterialFactory.CreateLit(new Color(0.14f, 0.15f, 0.18f));
+            if (bootMat.HasProperty("_Smoothness")) bootMat.SetFloat("_Smoothness", 0.35f);
 
-                case OutfitPreset.CyberRonin:
-                    chestMat.color = new Color(0.08f, 0.55f, 0.75f); // Neon Cyan plating
-                    pantsMat.color = new Color(0.12f, 0.14f, 0.20f);
-                    bootsMat.color = new Color(0.15f, 0.70f, 0.90f);
-                    break;
+            // Apply to Torso, Waist & Pants
+            if (chestRenderer) chestRenderer.material = outfitMat;
+            if (waistRenderer) waistRenderer.material = outfitMat;
+            if (pantsRenderer) pantsRenderer.material = outfitMat;
 
-                case OutfitPreset.DesertCommando:
-                    chestMat.color = new Color(0.65f, 0.55f, 0.38f); // Sand tactical vest
-                    pantsMat.color = new Color(0.48f, 0.42f, 0.30f); // Desert camo
-                    bootsMat.color = new Color(0.35f, 0.28f, 0.20f);
-                    break;
+            // Apply to Arms & Legs
+            if (leftArmRenderer) leftArmRenderer.material = outfitMat;
+            if (rightArmRenderer) rightArmRenderer.material = outfitMat;
+            if (leftLegRenderer) leftLegRenderer.material = outfitMat;
+            if (rightLegRenderer) rightLegRenderer.material = outfitMat;
 
-                case OutfitPreset.AetherVanguard:
-                    chestMat.color = new Color(0.92f, 0.92f, 0.95f); // White & Gold
-                    pantsMat.color = new Color(0.85f, 0.70f, 0.25f); // Gold weave
-                    bootsMat.color = new Color(0.95f, 0.80f, 0.30f);
-                    break;
-            }
-
-            if (chestRenderer) chestRenderer.material = chestMat;
-            if (leftArmRenderer) leftArmRenderer.material = chestMat;
-            if (rightArmRenderer) rightArmRenderer.material = chestMat;
-
-            if (pantsRenderer) pantsRenderer.material = pantsMat;
-            if (leftLegRenderer) leftLegRenderer.material = pantsMat;
-            if (rightLegRenderer) rightLegRenderer.material = pantsMat;
-
-            if (bootsRenderer) bootsRenderer.material = bootsMat;
-            if (leftFootRenderer) leftFootRenderer.material = bootsMat;
-            if (rightFootRenderer) rightFootRenderer.material = bootsMat;
+            // Apply to Boots
+            if (leftFootRenderer) leftFootRenderer.material = bootMat;
+            if (rightFootRenderer) rightFootRenderer.material = bootMat;
+            bootsRenderer = leftFootRenderer;
         }
 
         public void EquipWeapon(string weaponId)
@@ -364,64 +366,22 @@ namespace Kyoka.Character
 
             if (rightHandWeaponSocket == null) return;
 
-            currentEquippedWeaponObject = new GameObject($"Weapon_{weaponId}");
-            currentEquippedWeaponObject.transform.SetParent(rightHandWeaponSocket, false);
-
-            var metalMat = KyokaMaterialFactory.CreateLit(new Color(0.15f, 0.16f, 0.18f));
-            var accentMat = KyokaMaterialFactory.CreateLit(new Color(0.12f, 0.75f, 0.95f));
-
             switch (weaponId)
             {
                 case "Katana":
-                    var blade = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    blade.transform.SetParent(currentEquippedWeaponObject.transform, false);
-                    blade.transform.localPosition = new Vector3(0, 0, 0.45f);
-                    blade.transform.localScale = new Vector3(0.02f, 0.06f, 0.85f);
-                    blade.GetComponent<Renderer>().material = accentMat;
-                    Destroy(blade.GetComponent<Collider>());
-
-                    var hilt = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-                    hilt.transform.SetParent(currentEquippedWeaponObject.transform, false);
-                    hilt.transform.localPosition = new Vector3(0, 0, -0.08f);
-                    hilt.transform.localRotation = Quaternion.Euler(90, 0, 0);
-                    hilt.transform.localScale = new Vector3(0.035f, 0.12f, 0.035f);
-                    hilt.GetComponent<Renderer>().material = metalMat;
-                    Destroy(hilt.GetComponent<Collider>());
+                    currentEquippedWeaponObject = KyokaMeshBuilder.CreateDetailedKatana();
+                    currentEquippedWeaponObject.transform.SetParent(rightHandWeaponSocket, false);
+                    currentEquippedWeaponObject.transform.localPosition = new Vector3(0, 0, 0.08f);
+                    currentEquippedWeaponObject.transform.localRotation = Quaternion.Euler(0, 0, 0);
                     break;
 
                 case "Shotgun":
-                    var shotBody = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    shotBody.transform.SetParent(currentEquippedWeaponObject.transform, false);
-                    shotBody.transform.localPosition = new Vector3(0, 0, 0.18f);
-                    shotBody.transform.localScale = new Vector3(0.06f, 0.09f, 0.55f);
-                    shotBody.GetComponent<Renderer>().material = metalMat;
-                    Destroy(shotBody.GetComponent<Collider>());
-                    break;
-
                 case "AssaultRifle":
                 default:
-                    var receiver = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    receiver.transform.SetParent(currentEquippedWeaponObject.transform, false);
-                    receiver.transform.localPosition = new Vector3(0, 0, 0.12f);
-                    receiver.transform.localScale = new Vector3(0.05f, 0.08f, 0.35f);
-                    receiver.GetComponent<Renderer>().material = metalMat;
-                    Destroy(receiver.GetComponent<Collider>());
-
-                    var barrel = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-                    barrel.transform.SetParent(currentEquippedWeaponObject.transform, false);
-                    barrel.transform.localPosition = new Vector3(0, 0.02f, 0.36f);
-                    barrel.transform.localRotation = Quaternion.Euler(90, 0, 0);
-                    barrel.transform.localScale = new Vector3(0.022f, 0.16f, 0.022f);
-                    barrel.GetComponent<Renderer>().material = accentMat;
-                    Destroy(barrel.GetComponent<Collider>());
-
-                    var mag = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    mag.transform.SetParent(currentEquippedWeaponObject.transform, false);
-                    mag.transform.localPosition = new Vector3(0, -0.10f, 0.10f);
-                    mag.transform.localRotation = Quaternion.Euler(-18, 0, 0);
-                    mag.transform.localScale = new Vector3(0.04f, 0.14f, 0.06f);
-                    mag.GetComponent<Renderer>().material = metalMat;
-                    Destroy(mag.GetComponent<Collider>());
+                    currentEquippedWeaponObject = KyokaMeshBuilder.CreateDetailedAssaultRifle();
+                    currentEquippedWeaponObject.transform.SetParent(rightHandWeaponSocket, false);
+                    currentEquippedWeaponObject.transform.localPosition = new Vector3(0, -0.04f, 0.08f);
+                    currentEquippedWeaponObject.transform.localRotation = Quaternion.identity;
                     break;
             }
         }
@@ -433,6 +393,18 @@ namespace Kyoka.Character
             go.transform.localPosition = localPos;
             return go.transform;
         }
+
+        private GameObject CreateMeshChild(string name, Transform parent, Mesh mesh)
+        {
+            var go = new GameObject(name);
+            go.transform.SetParent(parent, false);
+
+            var mf = go.AddComponent<MeshFilter>();
+            mf.sharedMesh = mesh;
+
+            var mr = go.AddComponent<MeshRenderer>();
+            mr.material = KyokaMaterialFactory.CreateLit(Color.white);
+            return go;
+        }
     }
 }
-

@@ -32,6 +32,7 @@ namespace Kyoka.UI
         private Camera lobbyCamera;
         private KyokaCharacterModel lobbyCharacter;
         private Transform stagePedestal;
+        private Transform pedestalRing;
 
         [Header("Active State")]
         public LobbyGameMode selectedMode = LobbyGameMode.BattleRoyale;
@@ -81,64 +82,117 @@ namespace Kyoka.UI
             lobbyCamera = camGO.AddComponent<Camera>();
             lobbyCamera.clearFlags = CameraClearFlags.SolidColor;
             lobbyCamera.backgroundColor = new Color(0.04f, 0.06f, 0.09f);
-            lobbyCamera.fieldOfView = 50f;
+            lobbyCamera.fieldOfView = 48f;
             camGO.AddComponent<AudioListener>();
 
             camGO.transform.position = new Vector3(-0.35f, 1.25f, -3.2f);
             camGO.transform.LookAt(new Vector3(-0.1f, 1.05f, 0));
 
-            // Lighting Setup
+            // Lighting Setup - Key Light
             var keyGO = new GameObject("Lobby_KeyLight");
             keyGO.transform.SetParent(lobbyStageRoot.transform, false);
             var keyLight = keyGO.AddComponent<Light>();
             keyLight.type = LightType.Directional;
-            keyLight.intensity = 1.35f;
-            keyLight.color = new Color(1.0f, 0.96f, 0.90f);
-            keyGO.transform.rotation = Quaternion.Euler(30, -35, 0);
+            keyLight.intensity = 1.4f;
+            keyLight.color = new Color(1.0f, 0.97f, 0.92f);
+            keyGO.transform.rotation = Quaternion.Euler(32, -35, 0);
 
+            // Cyan Rim Light for anime contour highlights
             var rimGO = new GameObject("Lobby_CyanRim");
             rimGO.transform.SetParent(lobbyStageRoot.transform, false);
             var rimLight = rimGO.AddComponent<Light>();
             rimLight.type = LightType.Directional;
-            rimLight.intensity = 1.1f;
-            rimLight.color = new Color(0.12f, 0.85f, 0.95f);
-            rimGO.transform.rotation = Quaternion.Euler(15, 140, 0);
+            rimLight.intensity = 1.2f;
+            rimLight.color = new Color(0.12f, 0.85f, 0.98f);
+            rimGO.transform.rotation = Quaternion.Euler(15, 145, 0);
 
-            // Cyber Hangar Floor
+            // Warm Fill Light
+            var fillGO = new GameObject("Lobby_FillLight");
+            fillGO.transform.SetParent(lobbyStageRoot.transform, false);
+            var fillLight = fillGO.AddComponent<Light>();
+            fillLight.type = LightType.Directional;
+            fillLight.intensity = 0.5f;
+            fillLight.color = new Color(0.95f, 0.65f, 0.35f);
+            fillGO.transform.rotation = Quaternion.Euler(-20, 45, 0);
+
+            // High-Tech Carbon Hexagonal Floor
             var floor = GameObject.CreatePrimitive(PrimitiveType.Cube);
             floor.name = "Hangar_Floor";
             floor.transform.SetParent(lobbyStageRoot.transform, false);
-            floor.transform.position = new Vector3(0, -0.1f, 0);
-            floor.transform.localScale = new Vector3(14, 0.2f, 14);
+            floor.transform.localPosition = new Vector3(0, -0.1f, 0);
+            floor.transform.localScale = new Vector3(16, 0.2f, 16);
             Destroy(floor.GetComponent<Collider>());
 
-            var floorMat = KyokaMaterialFactory.CreateLit(new Color(0.16f, 0.18f, 0.22f), KyokaTextureGenerator.GetCyberGridTexture());
+            var floorTex = KyokaTextureGenerator.GetHangarFloorTexture();
+            var floorMat = KyokaMaterialFactory.CreateLit(new Color(0.18f, 0.20f, 0.25f), floorTex);
             floorMat.mainTextureScale = new Vector2(4, 4);
             floor.GetComponent<Renderer>().material = floorMat;
 
-            // Background Neon Light Pillars
+            // Holographic Circular Pedestal (Sleek Dark Carbon Turntable)
+            var pedGO = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            pedGO.name = "Stage_Pedestal";
+            pedGO.transform.SetParent(lobbyStageRoot.transform, false);
+            pedGO.transform.localPosition = new Vector3(-0.2f, 0.04f, 0);
+            pedGO.transform.localScale = new Vector3(2.2f, 0.08f, 2.2f);
+            Destroy(pedGO.GetComponent<Collider>());
+            var pedMat = KyokaMaterialFactory.CreateLit(new Color(0.12f, 0.14f, 0.18f), KyokaTextureGenerator.GetHangarFloorTexture());
+            pedMat.mainTextureScale = new Vector2(2, 2);
+            pedGO.GetComponent<Renderer>().material = pedMat;
+            stagePedestal = pedGO.transform;
+
+            // Sleek Cyan Underglow Ring Base (Subtle Ambient Glow, No Surface Blowout)
+            var ringGO = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            ringGO.name = "Pedestal_Ring";
+            ringGO.transform.SetParent(stagePedestal, false);
+            ringGO.transform.localPosition = new Vector3(0, -0.45f, 0);
+            ringGO.transform.localScale = new Vector3(1.05f, 0.20f, 1.05f);
+            Destroy(ringGO.GetComponent<Collider>());
+            var ringMat = KyokaMaterialFactory.CreateEmissionMaterial(new Color(0.08f, 0.72f, 0.92f), 0.9f);
+            ringGO.GetComponent<Renderer>().material = ringMat;
+            pedestalRing = ringGO.transform;
+
+            // Emissive KYOKA 3D Backdrop Billboard Sign
+            var signGO = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            signGO.name = "Backdrop_Sign";
+            signGO.transform.SetParent(lobbyStageRoot.transform, false);
+            signGO.transform.localPosition = new Vector3(-0.2f, 2.4f, 3.8f);
+            signGO.transform.localScale = new Vector3(4.8f, 1.6f, 0.15f);
+            Destroy(signGO.GetComponent<Collider>());
+            var signTex = KyokaTextureGenerator.GetNeonSignTexture("KYOKA 2.0", new Color(0.12f, 0.88f, 0.98f));
+            var signMat = KyokaMaterialFactory.CreateLit(Color.white, signTex);
+            signGO.GetComponent<Renderer>().material = signMat;
+
+            // Structural Hangar Neon Pillars
             for (int i = -3; i <= 3; i++)
             {
                 var pillar = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
                 pillar.transform.SetParent(lobbyStageRoot.transform, false);
-                pillar.transform.position = new Vector3(i * 1.8f, 3.0f, 4.5f);
-                pillar.transform.localScale = new Vector3(0.08f, 3.2f, 0.08f);
+                pillar.transform.localPosition = new Vector3(i * 1.8f, 2.6f, 4.2f);
+                pillar.transform.localScale = new Vector3(0.06f, 2.6f, 0.06f);
                 Destroy(pillar.GetComponent<Collider>());
 
-                Color pColor = (Mathf.Abs(i) % 2 == 0) ? new Color(0.12f, 0.85f, 0.95f) : new Color(0.95f, 0.72f, 0.15f);
-                pillar.GetComponent<Renderer>().material = KyokaMaterialFactory.CreateUnlit(pColor);
+                Color pColor = (Mathf.Abs(i) % 2 == 0) ? new Color(0.12f, 0.88f, 0.98f) : new Color(0.98f, 0.75f, 0.18f);
+                pillar.GetComponent<Renderer>().material = KyokaMaterialFactory.CreateEmissionMaterial(pColor, 1.8f);
             }
 
             // Spawn Customized Player in Center of Hangar
             var charGO = new GameObject("Lobby_Character");
             charGO.transform.SetParent(lobbyStageRoot.transform, false);
-            charGO.transform.position = new Vector3(-0.2f, 0, 0);
-            charGO.transform.rotation = Quaternion.Euler(0, 165f, 0);
+            charGO.transform.localPosition = new Vector3(-0.2f, 0.08f, 0);
+            charGO.transform.rotation = Quaternion.Euler(0, 168f, 0);
 
             lobbyCharacter = charGO.AddComponent<KyokaCharacterModel>();
             charGO.AddComponent<KyokaProceduralAnimator>();
 
             RefreshCharacterVisuals();
+        }
+
+        private void Update()
+        {
+            if (pedestalRing != null)
+            {
+                pedestalRing.Rotate(Vector3.up, 35f * Time.deltaTime, Space.Self);
+            }
         }
 
         public void RefreshCharacterVisuals()

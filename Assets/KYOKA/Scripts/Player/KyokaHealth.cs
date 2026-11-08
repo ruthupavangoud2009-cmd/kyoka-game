@@ -7,6 +7,7 @@ namespace Kyoka.Player
     {
         [Min(1)] public int maxHealth = 100;
         public int CurrentHealth { get; private set; }
+        public int currentHealth => CurrentHealth;
         public event Action<int, int> HealthChanged;
         public event Action Defeated;
 
@@ -17,6 +18,8 @@ namespace Kyoka.Player
             CurrentHealth = maxHealth;
             HealthChanged?.Invoke(CurrentHealth, maxHealth);
         }
+
+        public void Heal(int amount) => Restore(amount);
 
         public void ApplyGameDamage(int amount)
         {

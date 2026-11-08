@@ -16,7 +16,11 @@ namespace Kyoka.Audio
         VehicleEngine,
         ButtonClick,
         RewardChime,
-        Explosion
+        Explosion,
+        LootPickup,
+        KatanaSlash,
+        Hitmarker,
+        Reload
     }
 
     /// <summary>

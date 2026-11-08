@@ -48,11 +48,13 @@ namespace Kyoka.Player
                 if (save.customization != null && save.customization.hasCreatedCharacter)
                 {
                     model.isFemale = save.customization.isFemale;
-                    model.currentHairStyle = (HairStyleType)save.customization.hairStyleIndex;
-                    model.currentHairColor = new Color(save.customization.hairR, save.customization.hairG, save.customization.hairB);
-                    model.currentSkinColor = new Color(save.customization.skinR, save.customization.skinG, save.customization.skinB);
-                    model.currentOutfit = (OutfitPreset)save.customization.outfitIndex;
+                    model.currentHairStyle = (HairStyleType)save.customization.hairStyle;
+                    model.currentHairColor = new Color(save.customization.hairColorR, save.customization.hairColorG, save.customization.hairColorB);
+                    model.currentSkinColor = new Color(save.customization.skinToneR, save.customization.skinToneG, save.customization.skinToneB);
+                    model.currentEyeColor = new Color(save.customization.eyeColorR, save.customization.eyeColorG, save.customization.eyeColorB);
+                    model.currentOutfit = (OutfitPreset)save.customization.outfitPreset;
                     model.BuildHumanoidMesh();
+                    model.ApplyCustomization(model.currentHairStyle, model.currentHairColor, model.currentSkinColor, model.currentEyeColor, model.currentOutfit);
                 }
 
                 if (save.hasSavedPosition)
