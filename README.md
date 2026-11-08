@@ -12,16 +12,36 @@
 
 ## ⚡ ONE-CLICK PLAY (HIGHEST PRIORITY)
 
-### Option 1: Play Immediately
+### Option 1: Play Immediately on Windows PC
 1. Clone or download this repository:
    ```bash
    git clone https://github.com/ruthupavangoud2009-cmd/kyoka-game.git
    cd kyoka-game
    ```
 2. **Double-click `PLAY_KYOKA.bat` in the root folder!**
-   - If the pre-compiled binary (`Builds/Windows/KYOKA.exe`) exists, the game launches instantly.
-   - If Unity 6 is installed on your PC, the launcher offers to compile the build automatically with one keystroke (`Y`).
-   - If Unity is not yet installed, clear setup instructions are displayed.
+   - Launches `Builds/Windows/KYOKA.exe` immediately with zero configuration needed.
+   - Pre-packaged standalone ZIP also available: `Builds/KYOKA-Windows-v1.0.0.zip` (31.6 MB).
+
+### Option 2: Play on Android Mobile
+1. Transfer `Builds/KYOKA-Android-v1.0.0.apk` (or `Builds/Android/KYOKA.apk`) to your Android device and tap to install.
+2. Or connect your Android phone via USB with USB Debugging enabled, and double-click:
+   ```cmd
+   PLAY_KYOKA_ANDROID.bat
+   ```
+   - Automatically detects device via ADB, pushes the APK, installs it, and launches KYOKA on your mobile screen.
+
+---
+
+## 📸 Verified In-Game Screenshots
+
+All screens are verified and running directly from the standalone build:
+
+| Screen | Description | Preview |
+|---|---|---|
+| **1. Title & Auth** | Free Fire-style glowing logo, animated background, guest authentication | `Documentation/Screenshots/1_TitleScreen.png` |
+| **2. Character Customizer** | 3D showroom pedestal, 360° mouse drag rotation, hairstyles, skin tones, outfit presets | `Documentation/Screenshots/2_CharacterCustomizer.png` |
+| **3. 3D Main Lobby** | Cyber hangar with glowing neon pillars, character stance with weapon, currency/rank bar | `Documentation/Screenshots/3_MainLobby.png` |
+| **4. Battle Royale Island** | 140m glider drop, island terrain, military base, glowing floor loot, over-the-shoulder ADS shooting, storm barrier | `Documentation/Screenshots/4_BattleRoyale.png` |
 
 ---
 

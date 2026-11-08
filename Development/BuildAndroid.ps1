@@ -28,8 +28,9 @@ if (-not $UnityPath) {
     )
     $installed = Resolve-Path $unityCandidates -ErrorAction SilentlyContinue | Sort-Object -Descending
     foreach ($c in $installed) {
+        $androidPlayer = Join-Path (Split-Path $c.Path) "Data\PlaybackEngines\AndroidPlayer"
         $pmServer = Join-Path (Split-Path $c.Path) "Data\Resources\PackageManager\Server\UnityPackageManager.exe"
-        if (Test-Path $pmServer) {
+        if ((Test-Path $androidPlayer) -and (Test-Path $pmServer)) {
             $UnityPath = $c.Path
             break
         }
@@ -46,6 +47,12 @@ if (-not $UnityPath -or -not (Test-Path $UnityPath)) {
 }
 
 Write-Host "Using Unity Editor at: $UnityPath" -ForegroundColor Green
+
+$unityDir = Split-Path (Split-Path $UnityPath)
+$env:JAVA_HOME = "$unityDir\Data\PlaybackEngines\AndroidPlayer\OpenJDK"
+$env:ANDROID_HOME = "$unityDir\Data\PlaybackEngines\AndroidPlayer\SDK"
+$env:ANDROID_SDK_ROOT = "$unityDir\Data\PlaybackEngines\AndroidPlayer\SDK"
+$env:ANDROID_NDK_ROOT = "$unityDir\Data\PlaybackEngines\AndroidPlayer\NDK"
 
 # 2. Output Paths
 $outputDir = "$projectDir\Builds\Android"

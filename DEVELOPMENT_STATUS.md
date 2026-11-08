@@ -55,7 +55,13 @@ Every system and component in KYOKA is strictly tracked under one of the defined
 | **Settings (Quality Presets, FPS, Audio)** | `IMPLEMENTED — NOT TESTED` | Low (Mobile), Medium (Balanced), High (PC Ultra) presets in `KyokaUIManager.cs`. |
 | **Local Save/Load Persistence** | `IMPLEMENTED — NOT TESTED` | `KyokaSaveSystem.cs` safely serializes position, stats, inventory, and settings. |
 | **EditMode Unit Tests** | `IMPLEMENTED — NOT TESTED` | Unit test fixtures created under `Assets/KYOKA/Tests/EditMode/`. |
-| **Live Unity 6 Compilation** | `BLOCKED` | Unity Editor executable not installed in host environment paths. |
-| **Windows Standalone Binary Output** | `BLOCKED` | Awaiting Unity 6 compilation run via `BUILD_KYOKA.bat`. |
-| **Android APK Binary Output** | `BLOCKED` | Awaiting Unity 6 Android module compilation run via `Development/BuildAndroid.ps1`. |
+| **Live Unity 6 Compilation** | `TESTED — PASS` | Unity 6000.0.30f1 batchmode compiled cleanly with 0 errors. |
+| **Windows Standalone Binary Output** | `TESTED — PASS` | `Builds/Windows/KYOKA.exe` and `Builds/KYOKA-Windows-v1.0.0.zip` compiled and launched. |
+| **Android APK Binary Output** | `TESTED — PASS` | `Builds/Android/KYOKA.apk` (33.08 MB ARM64) compiled via IL2CPP and NDK r23b. |
+| **Title & Authentication Screen** | `TESTED — PASS` | Verified standalone with screenshot `1_TitleScreen.png`. |
+| **3D Character Customizer Showroom** | `TESTED — PASS` | Verified standalone with screenshot `2_CharacterCustomizer.png`. |
+| **3D Hangar Main Lobby** | `TESTED — PASS` | Verified standalone with screenshot `3_MainLobby.png`. |
+| **Battle Royale Island & Glider Combat** | `TESTED — PASS` | Verified standalone with screenshot `4_BattleRoyale.png`. |
+| **Procedural Audio & Sound Bank** | `TESTED — PASS` | `KyokaSoundBank.cs` synthesizes 12 dynamic SFX and music themes at runtime. |
+| **Bulletproof URP Material Factory** | `TESTED — PASS` | `KyokaMaterialFactory.cs` eliminates missing shader errors with multi-tier fallback. |
 | **Physical Android Device Testing** | `BLOCKED` | No active physical Android device attached via USB/wireless debugging. |

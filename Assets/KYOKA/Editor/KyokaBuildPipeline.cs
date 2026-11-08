@@ -57,6 +57,30 @@ namespace Kyoka.Editor
 
             EnsureBootstrapSceneExists();
 
+            // Configure Android SDK / NDK / OpenJDK paths if present in Editor folder
+            string editorData = EditorApplication.applicationContentsPath;
+            string androidPlayer = Path.Combine(editorData, "PlaybackEngines", "AndroidPlayer");
+            string sdkPath = Path.Combine(androidPlayer, "SDK");
+            string ndkPath = Path.Combine(androidPlayer, "NDK");
+            string jdkPath = Path.Combine(androidPlayer, "OpenJDK");
+
+            if (Directory.Exists(sdkPath))
+            {
+                EditorPrefs.SetString("AndroidSdkRoot", sdkPath);
+                Debug.Log($"[KYOKA Build] Configured Android SDK: {sdkPath}");
+            }
+            if (Directory.Exists(ndkPath))
+            {
+                EditorPrefs.SetString("AndroidNdkRootR23b", ndkPath);
+                EditorPrefs.SetString("AndroidNdkRoot", ndkPath);
+                Debug.Log($"[KYOKA Build] Configured Android NDK: {ndkPath}");
+            }
+            if (Directory.Exists(jdkPath))
+            {
+                EditorPrefs.SetString("JdkPath", jdkPath);
+                Debug.Log($"[KYOKA Build] Configured OpenJDK: {jdkPath}");
+            }
+
             // Configure Android player settings
             PlayerSettings.SetScriptingBackend(NamedBuildTarget.Android, ScriptingImplementation.IL2CPP);
             PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARM64;
@@ -105,6 +129,7 @@ namespace Kyoka.Editor
             Debug.Log($"[KYOKA Validate] Bootstrap scene present: {hasScenes}");
             Debug.Log($"[KYOKA Validate] Product Name: {PlayerSettings.productName}");
             Debug.Log($"[KYOKA Validate] Bundle Identifier: {PlayerSettings.applicationIdentifier}");
+            Debug.Log($"[KYOKA Validate] Android Target Supported: {UnityEditor.BuildPipeline.IsBuildTargetSupported(BuildTargetGroup.Android, BuildTarget.Android)}");
 
             Debug.Log("[KYOKA Validate] Project validation completed.");
         }

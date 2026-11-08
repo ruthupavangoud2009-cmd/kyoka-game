@@ -6,6 +6,8 @@
 UserSettings/
 MemoryCaptures/
 Recordings/
+.utmp/
+.gradle/
 
 # Visual Studio / Rider / IDE cache
 .vs/

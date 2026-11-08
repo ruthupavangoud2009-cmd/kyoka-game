@@ -64,8 +64,11 @@ namespace Kyoka.UI
             }
         }
 
+        public bool showLegacyHUD = false;
+
         private void OnGUI()
         {
+            if (!showLegacyHUD) return;
             if (player == null) FindPlayerReferences();
             InitializeStyles();
 

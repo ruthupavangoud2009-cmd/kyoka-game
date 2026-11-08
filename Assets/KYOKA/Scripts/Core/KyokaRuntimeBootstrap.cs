@@ -37,35 +37,15 @@ namespace Kyoka.Core
 
             // Core Foundation & Input
             EnsureComponent<KyokaInputBridge>("InputBridge");
-            EnsureComponent<KyokaGameModeManager>("GameModeManager");
+            EnsureComponent<KyokaAudioManager>("AudioManager");
             EnsureComponent<KyokaEconomyManager>("EconomyManager");
             EnsureComponent<KyokaShopManager>("ShopManager");
-            EnsureComponent<KyokaCraftingSystem>("CraftingSystem");
-
-            // World & Spawners
-            EnsureComponent<KyokaWorldBootstrap>("WorldBootstrap");
-            EnsureComponent<KyokaPlayerBootstrap>("PlayerBootstrap");
-            EnsureComponent<KyokaVehicleSpawner>("VehicleSpawner");
-            EnsureComponent<KyokaAbilityLibrary>("AbilityLibrary");
-
-            // Gameplay Rules & Systems
-            EnsureComponent<KyokaMissionManager>("MissionManager");
-            EnsureComponent<KyokaMatchController>("BattleRoyaleMatchController");
-            EnsureComponent<KyokaWantedSystem>("WantedSystem");
-
-            // Social & Networking
             EnsureComponent<KyokaSocialManager>("SocialManager");
             EnsureComponent<KyokaNetworkManager>("NetworkManager");
             EnsureComponent<KyokaBackendClient>("BackendClient");
 
-            // Audio & Ambience
-            EnsureComponent<KyokaAudioManager>("AudioManager");
-
-            // UI & Presentation
-            EnsureComponent<KyokaUIManager>("UIManager");
-            EnsureComponent<KyokaTouchControls>("TouchControls");
-            EnsureComponent<KyokaHUD>("KYOKA_HUD");
-            EnsureComponent<KyokaTrafficSystem>("TrafficSystem");
+            // Master Game Flow Coordinator (Title -> Character Customizer -> 3D Lobby -> Battle Royale / Open World)
+            EnsureComponent<KyokaMasterGameController>("MasterGameController");
         }
 
         private T EnsureComponent<T>(string goName) where T : Component

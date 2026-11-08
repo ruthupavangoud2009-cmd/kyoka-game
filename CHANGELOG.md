@@ -4,6 +4,36 @@ All notable changes across development phases are documented in this file.
 
 ---
 
+## [1.2.0-CROSS-PLATFORM-EXPERIENCE] — 2026-11-08
+
+### Added
+- **Cinematic Title & Authentication Screen**:
+  - `KyokaTitleScreenUI.cs`: Free Fire-style animated glowing logo, Aether Protocol subtitle, guest authentication, and tap-to-start transition.
+- **3D Character Customizer Showroom**:
+  - `KyokaCharacterCustomizerUI.cs`: 3D showroom pedestal, 360° mouse drag rotation, scroll zoom, and normalized non-overlapping vertical UI panel.
+  - Symmetrical procedural anime face with eyes, eyebrows, blush, and smile texture generation.
+  - 4 hairstyle selections (Spiky Anime with scalp base and framing bangs, Cyber Fade, Samurai Ponytail, Tactical Buzzcut), gender options, skin tones, hair colors, outfit presets, and random name generator.
+- **3D Hangar Main Lobby**:
+  - `KyokaLobbyUI.cs`: Cyber hangar environment with glowing pillars, character weapon stance, rank/currency header (Kaito, Level 1, Gold II, Coins 500, Gems 10), mode selection, Wardrobe, Armory, Vehicles, and Shop modals.
+- **Battle Royale Combat & Island Drop**:
+  - `KyokaBattleRoyaleExperience.cs`: Glider drop sequence from 140m altitude with banking physics, 400m x 400m island terrain, procedural military compounds, watchtowers, and glowing floor loot beams (Assault Rifle, Shotgun, Sniper, Katana, Medkit, Armor).
+  - Over-the-shoulder ADS shooting with recoil, muzzle flash, bullet tracers, hitmarkers, and headshots.
+  - Hostile AI bots with patrol, line-of-sight acquisition, and combat shooting.
+  - Dynamic storm circle constriction with radioactive storm barrier and damage ticks.
+  - Minimap radar, real-time kill feed, and BOOYAH! victory fanfare screen with return-to-lobby loop.
+- **Procedural Art & Audio Engine**:
+  - `KyokaMaterialFactory.cs`: Bulletproof material and shader factory with robust fallback chains preventing null shaders in standalone builds.
+  - `KyokaTextureGenerator.cs`: Runtime procedural generation for cyber grids, 9-sliced panels, buttons, crosshairs, anime faces, and glider skins.
+  - `KyokaSoundBank.cs`: Procedural audio synthesizer generating lobby synthwave music, combat drum tracks, gunshots (Rifle, Shotgun, Sniper), Katana slashes, reloads, hitmarkers, headshots, loot pickups, glider wind, and BOOYAH! victory fanfare at ₹0 cost.
+  - `KyokaProceduralAnimator.cs`: Joint animation providing idle breathing, run/walk cycles, ADS aiming pose, firing recoil kick, and skydiving glide pose.
+- **Cross-Platform Compilation & Verification**:
+  - Windows 64-bit standalone build compiled and verified: `Builds/Windows/KYOKA.exe` (and release package `Builds/KYOKA-Windows-v1.0.0.zip`).
+  - Android ARM64 APK compiled via Unity 6 IL2CPP + Android NDK r23b: `Builds/Android/KYOKA.apk` (and release package `Builds/KYOKA-Android-v1.0.0.apk`, 33.08 MB).
+  - Standalone multi-screen automated capture with verified screenshots in `Builds/Screenshots/`.
+  - Zero errors / zero exceptions verified in `Player.log`.
+
+---
+
 ## [1.1.0-RELEASE-CANDIDATE] — 2026-11-08
 
 ### Added

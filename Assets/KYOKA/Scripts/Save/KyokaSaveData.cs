@@ -14,11 +14,16 @@ namespace Kyoka.Save
     [Serializable]
     public class CharacterCustomizationData
     {
+        public string playerName = "Kaito";
+        public bool isFemale = false;
+        public int outfitPreset = 0;
+        public string equippedWeaponId = "AssaultRifle";
+        public bool hasCreatedCharacter = false;
         public int hairStyle = 0;
-        public float hairColorR = 0.2f, hairColorG = 0.6f, hairColorB = 0.9f;
-        public float eyeColorR = 0.1f, eyeColorG = 0.8f, eyeColorB = 0.7f;
+        public float hairColorR = 0.12f, hairColorG = 0.75f, hairColorB = 0.95f;
+        public float eyeColorR = 0.1f, eyeColorG = 0.85f, eyeColorB = 0.7f;
         public float outfitColorR = 0.15f, outfitColorG = 0.2f, outfitColorB = 0.35f;
-        public float skinToneR = 0.95f, skinToneG = 0.82f, skinToneB = 0.72f;
+        public float skinToneR = 0.96f, skinToneG = 0.82f, skinToneB = 0.73f;
     }
 
     [Serializable]
