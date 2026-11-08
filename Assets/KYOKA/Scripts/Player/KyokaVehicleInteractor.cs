@@ -1,23 +1,33 @@
 using UnityEngine;
 using Kyoka.Vehicles;
+using Kyoka.Core;
 
 namespace Kyoka.Player
 {
-    /// <summary>Local prototype interaction for entering and exiting nearby vehicles.</summary>
+    /// <summary>
+    /// Player interaction controller for boarding and exiting nearby vehicles.
+    /// Operates via desktop [E] key or the mobile Touchscreen Interact button.
+    /// </summary>
     public class KyokaVehicleInteractor : MonoBehaviour
     {
-        public float interactionRange = 4.5f;
+        public float interactionRange = 5.0f;
         private KyokaVehicleController activeVehicle;
+
+        public bool IsInVehicle => activeVehicle != null;
+        public KyokaVehicleController ActiveVehicle => activeVehicle;
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.E))
+            var input = KyokaInputBridge.Instance;
+            if (input != null && input.InteractPressed)
+            {
                 Interact();
+            }
         }
 
         public bool Interact()
         {
-            if (activeVehicle != null && activeVehicle.IsOccupied)
+            if (activeVehicle != null)
             {
                 activeVehicle.Exit();
                 activeVehicle = null;
@@ -26,9 +36,11 @@ namespace Kyoka.Player
 
             KyokaVehicleController nearest = null;
             float nearestDistance = interactionRange;
-            foreach (var vehicle in FindObjectsOfType<KyokaVehicleController>())
+
+            KyokaVehicleController[] vehicles = FindObjectsOfType<KyokaVehicleController>();
+            foreach (var vehicle in vehicles)
             {
-                if (!vehicle || vehicle.IsOccupied) continue;
+                if (!vehicle) continue;
                 float distance = Vector3.Distance(transform.position, vehicle.transform.position);
                 if (distance <= nearestDistance)
                 {
@@ -37,9 +49,15 @@ namespace Kyoka.Player
                 }
             }
 
-            if (nearest == null || !nearest.Enter(transform)) return false;
-            activeVehicle = nearest;
-            return true;
+            if (nearest == null) return false;
+
+            if (nearest.Enter(transform))
+            {
+                activeVehicle = nearest;
+                return true;
+            }
+
+            return false;
         }
     }
 }

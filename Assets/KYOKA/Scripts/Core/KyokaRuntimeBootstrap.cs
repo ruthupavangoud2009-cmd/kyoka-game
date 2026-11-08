@@ -3,10 +3,23 @@ using Kyoka.Player;
 using Kyoka.World;
 using Kyoka.UI;
 using Kyoka.Vehicles;
-using Kyoka.Abilities;\nusing Kyoka.Missions;\nusing Kyoka.BattleRoyale;\nusing Kyoka.Networking;
+using Kyoka.Abilities;
+using Kyoka.Combat;
+using Kyoka.Missions;
+using Kyoka.BattleRoyale;
+using Kyoka.Networking;
+using Kyoka.Economy;
+using Kyoka.Survival;
+using Kyoka.Social;
+using Kyoka.Backend;
 
 namespace Kyoka.Core
 {
+    /// <summary>
+    /// Master runtime bootstrap for KYOKA.
+    /// Ensures every core subsystem, manager, world builder, UI canvas,
+    /// and player avatar is initialized and registered upon launch.
+    /// </summary>
     public class KyokaRuntimeBootstrap : MonoBehaviour
     {
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -20,22 +33,44 @@ namespace Kyoka.Core
         private void Awake()
         {
             DontDestroyOnLoad(gameObject);
-            if (FindObjectOfType<KyokaWorldBootstrap>() == null)
-                new GameObject("WorldBootstrap").AddComponent<KyokaWorldBootstrap>();
-            if (FindObjectOfType<KyokaPlayerBootstrap>() == null)
-                new GameObject("PlayerBootstrap").AddComponent<KyokaPlayerBootstrap>();
-            if (FindObjectOfType<KyokaVehicleSpawner>() == null)
-                new GameObject("VehicleSpawner").AddComponent<KyokaVehicleSpawner>();
-            if (FindObjectOfType<KyokaAbilityLibrary>() == null)
-                new GameObject("AbilityLibrary").AddComponent<KyokaAbilityLibrary>();
-            if (FindObjectOfType<KyokaHUD>() == null)
-                new GameObject("KYOKA_HUD").AddComponent<KyokaHUD>();
-            if (FindObjectOfType<KyokaMissionManager>() == null)
-                new GameObject("MissionManager").AddComponent<KyokaMissionManager>();
-            if (FindObjectOfType<KyokaMatchController>() == null)
-                new GameObject("BattleRoyaleMatchController").AddComponent<KyokaMatchController>();
-            if (FindObjectOfType<KyokaNetworkStatus>() == null)
-                new GameObject("NetworkStatus_OfflinePrototype").AddComponent<KyokaNetworkStatus>();
+
+            // Core Foundation & Input
+            EnsureComponent<KyokaInputBridge>("InputBridge");
+            EnsureComponent<KyokaGameModeManager>("GameModeManager");
+            EnsureComponent<KyokaEconomyManager>("EconomyManager");
+            EnsureComponent<KyokaShopManager>("ShopManager");
+            EnsureComponent<KyokaCraftingSystem>("CraftingSystem");
+
+            // World & Spawners
+            EnsureComponent<KyokaWorldBootstrap>("WorldBootstrap");
+            EnsureComponent<KyokaPlayerBootstrap>("PlayerBootstrap");
+            EnsureComponent<KyokaVehicleSpawner>("VehicleSpawner");
+            EnsureComponent<KyokaAbilityLibrary>("AbilityLibrary");
+
+            // Gameplay Rules & Systems
+            EnsureComponent<KyokaMissionManager>("MissionManager");
+            EnsureComponent<KyokaMatchController>("BattleRoyaleMatchController");
+            EnsureComponent<KyokaWantedSystem>("WantedSystem");
+
+            // Social & Networking
+            EnsureComponent<KyokaSocialManager>("SocialManager");
+            EnsureComponent<KyokaNetworkManager>("NetworkManager");
+            EnsureComponent<KyokaBackendClient>("BackendClient");
+
+            // UI & Presentation
+            EnsureComponent<KyokaUIManager>("UIManager");
+            EnsureComponent<KyokaTouchControls>("TouchControls");
+            EnsureComponent<KyokaHUD>("KYOKA_HUD");
+        }
+
+        private T EnsureComponent<T>(string goName) where T : Component
+        {
+            T existing = FindObjectOfType<T>();
+            if (existing != null) return existing;
+
+            var go = new GameObject(goName);
+            go.transform.SetParent(transform);
+            return go.AddComponent<T>();
         }
     }
 }

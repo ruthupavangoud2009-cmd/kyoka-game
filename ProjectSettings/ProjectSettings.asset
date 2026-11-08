@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!129 &1
+PlayerSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 26
+  productGUID: 0a1b2c3d4e5f60718293a4b5c6d7e8f9
+  AndroidProfiler: 0
+  AndroidFilterTouchesWhenObscured: 0
+  AndroidEnableSustainedPerformanceMode: 0
+  defaultScreenOrientation: 3
+  targetDevice: 2
+  useOnDemandResources: 0
+  accelerometerFrequency: 60
+  companyName: KYOKA Studios
+  productName: KYOKA
+  defaultCursor: {fileID: 0}
+  cursorHotspot: {x: 0, y: 0}
+  m_SplashScreenBackgroundColor: {r: 0.05, g: 0.05, b: 0.08, a: 1}
+  defaultScreenWidth: 1920
+  defaultScreenHeight: 1080
+  defaultScreenWidthWeb: 960
+  defaultScreenHeightWeb: 600
+  m_RenderingPath: 1
+  m_MobileRenderingPath: 1
+  activeColorSpace: 1
+  m_MTRendering: 1
+  mobileMTRendering: 1
+  m_SupportedAspectRatios:
+    4:3: 1
+    5:4: 1
+    16:10: 1
+    16:9: 1
+    Others: 1
+  bundleVersion: 1.0.0
+  bundleVersionCode: 1
+  AndroidMinSdkVersion: 24
+  AndroidTargetSdkVersion: 34
+  AndroidTargetArchitectures: 2
+  aotOptions: 
+  stripEngineCode: 1
+  iPhoneBundleIdentifier: com.kyoka.game
+  AndroidBundleIdentifier: com.kyoka.game
+  scriptingBackend: 1
+  activeInputHandler: 2

@@ -1,22 +1,20 @@
-# KYOKA Architecture
+# KYOKA — System Architecture
 
-## Runtime flow
-`KyokaRuntimeBootstrap` ensures runtime bootstrapping. It creates the world, player, vehicle prototypes, ability library and HUD if absent.
+See root `ARCHITECTURE.md` for the full technical breakdown, class diagrams, and flow charts.
 
-## Modules
-- Core: startup and configuration.
-- Player: movement, health and camera.
-- Abilities: ScriptableObject definitions and ability execution.
-- Vehicles: shared vehicle type and prototype controller.
-- World: runtime greybox environment.
-- Inventory: item stacks.
-- Missions: objective progress.
-- Survival: resource nodes and recipe definitions.
-- Creative: basic block placement.
-- BattleRoyale: local match-state prototype.
-- Networking: explicit integration boundary, not a live connection.
-- Save: local JSON persistence.
-- UI: prototype HUD.
-
-## Production expansion
-Use interfaces and service abstractions as the project grows. Move valuable state to an authoritative backend. Replace prototype input with Input System actions and implement touch controls. Replace generated geometry with optimized Addressable environment assets. Add scene/region streaming and server-hosted sessions.
+## Core Modules
+- **Core**: Runtime bootstrap (`KyokaRuntimeBootstrap.cs`), Input bridge (`KyokaInputBridge.cs`), Game mode manager (`KyokaGameModeManager.cs`).
+- **Player**: Movement & states (`KyokaPlayerController.cs`), Camera rig (`KyokaCameraRig.cs`), Health (`KyokaHealth.cs`), Customization (`KyokaCharacterCustomization.cs`).
+- **Combat**: Melee combos, ranged weapons, guard defense (`KyokaCombatSystem.cs`), Projectiles (`KyokaProjectile.cs`).
+- **Abilities**: 5 elemental powers + Awakening transformation (`KyokaAbilityLibrary.cs`), energy and cooldown management (`KyokaAbilityUser.cs`).
+- **Vehicles**: Car, Motorcycle, Boat, Aircraft controllers (`KyokaVehicleController.cs`), Garage services (`KyokaGarageManager.cs`).
+- **World**: 6 Major Regions, Day/Night lighting, dynamic weather (`KyokaWorldManager.cs`, `KyokaWorldBootstrap.cs`).
+- **Economy**: Currency, shops, anti-exploit validation (`KyokaEconomyManager.cs`, `KyokaShopManager.cs`).
+- **Survival**: Gathering nodes, crafting recipes (`KyokaCraftingSystem.cs`, `KyokaResourceNode.cs`).
+- **Missions**: Story, side, and daily quest tracker (`KyokaMissionManager.cs`).
+- **Battle Royale**: Safe zone circle, storm damage, alive counter, match results (`KyokaMatchController.cs`, `KyokaLootSpawner.cs`).
+- **Creative**: Grid placement, color palette, JSON blueprint saving (`KyokaCreativeBuilder.cs`).
+- **Social**: Player profiles, party management, multi-channel chat (`KyokaSocialManager.cs`).
+- **Networking**: LAN socket server/client mode, Relay/Lobby integration boundaries (`KyokaNetworkManager.cs`).
+- **UI**: In-game HUD, modal pause menu, settings, mobile touch joystick (`KyokaHUD.cs`, `KyokaUIManager.cs`, `KyokaTouchControls.cs`).
+- **Persistence**: Safe local JSON save system with backup restore (`KyokaSaveSystem.cs`).
